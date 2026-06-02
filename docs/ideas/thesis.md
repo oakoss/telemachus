@@ -35,4 +35,4 @@ They share one shape: **reactive UI over synced local agent/conversation state.*
 
 ## Not yet decided
 
-The stack is now largely decided — see the ADRs ([`../decisions/`](../decisions/)) and the **Decided** block in [`AGENTS.md`](../../AGENTS.md) as the source of truth. Open: the **server runtime** and where **local-first sync** enters (thread #5).
+The stack is **decided** — see the ADRs ([`../decisions/`](../decisions/)) and the **Decided** block in [`AGENTS.md`](../../AGENTS.md) (the source of truth). The open work is **per-thread design** — e.g. where **local-first sync** enters (thread #5).
