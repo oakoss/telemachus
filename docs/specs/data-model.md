@@ -210,6 +210,18 @@ Memory collection interface: `write`, `consolidate(candidates) → add|update|de
 - **Deletes** set `deletedAt` (tombstone); never hard-delete a synced row.
 - **Append-only** for `runs`/`runSteps`/finalized `parts`/`compactions` means sync replicates inserts, not rewrites — the ideal Electric workload.
 
+## Data-access boundaries
+
+TanStack DB does not replace TanStack Query — they layer (same team). **TanStack Query is a server-state cache/sync layer, not a fetcher** — the fetching is native `fetch` or (mostly) **TanStack Start server functions**; Query orchestrates caching, dedup, staleness, and loading/error around it. What handles what:
+
+- **Synced reactive data** (conversations/messages/parts/…) → **TanStack DB collections** (Electric-synced; SQLite-local until sync lands).
+- **Non-Electric reactive server-state** (e.g. a model list, settings) → a **Query Collection** (`@tanstack/query-db-collection`, `queryCollectionOptions`) — its `queryFn` fetches via a Start server fn / `fetch`, TanStack Query supplies the cache/staleness layer, and TanStack DB makes it a live-queryable, joinable collection.
+- **One-off reads** (no collection needed) → a **Start server fn** does the fetch — wrap it in **TanStack Query** when you want caching/dedup/refetch, or call it directly in a Router loader when you don't.
+- **Auth / session** → **Better Auth's own client** (`createAuthClient` / `useSession`, nanostore-reactive) — not Query, not a collection.
+- **Streaming** → **TanStack AI** `useChat` (SSE) — not Query.
+
+Rule of thumb: reach for TanStack Query _through_ a Query Collection when non-Electric data should be reactive; standalone only for simple cached fetches. (R1 needs none of the standalone-Query cases — auth + `useChat` + local collections cover it.)
+
 ## Import / export interop
 
 ChatGPT export is the interop target: a **top-level `current_node`** plus a **`mapping`** of `{ <id>: {id, message, parent, children} }`. It round-trips cleanly — `mapping` nodes ↔ `messages.parentId`, `current_node` ↔ `conversations.currentMessageId`. Also covers Open WebUI / LibreChat imports. Map `author.role → role`, `content.parts → parts`.
