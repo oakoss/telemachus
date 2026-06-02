@@ -65,9 +65,9 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 
 Telemachus — a personal-first, local-first chat + agent hub; a spiritual successor to Odysseus. Research/ideas phase; no application code yet.
 
-**Decided:** the name; placement under oakoss; the thread-1 scope — personal-first; the conversation is the primary object; scope = parity with Odysseus + the wedge + best-of-breed imports; built wedge-first; agent-native is the _trajectory_, not the launch identity.
+**Decided:** the name; placement under oakoss; the thread-1 scope — personal-first; the conversation is the primary object; scope = parity with Odysseus + the wedge + best-of-breed imports; built wedge-first; agent-native is the _trajectory_, not the launch identity. **Stack — data layer:** TanStack DB + ElectricSQL + PGlite ([ADR-001](docs/decisions/001-data-layer-tanstack-db-electric-pglite.md)). **Free / OSS only, self-hosted** (Proxmox / Coolify) — no paid or hobby-tier SaaS.
 
-**Recommended, not committed:** the stack (TypeScript / TanStack). Treat it as a proposal until something is built on it (first ADR); do not present it as decided.
+**Recommended, not committed:** the rest of the stack — TypeScript is the lane; the app framework (TanStack Start/Router), the React UI / component layer, the server runtime, and the model/LLM layer each await their own ADR. Do not present them as decided.
 
 See `docs/` for the substance — `ideas/` (thesis, scope-positioning), `research/` (landscape, differentiation), `specs/` (roadmap ladder), `decisions/` (ADRs) — and run `bd prime` for project memory and the open threads (#2 data model, #3 fork semantics, #4 durable memory, #5 sync).
 

@@ -6,7 +6,7 @@
 
 ## The question
 
-The research docs answer **how** Telemachus differs (the wedge). They did not answer **what it is first, and for whom**. This doc records that decision and the reasoning behind it (open thread #1 from the 2026-06-01 handoff).
+The research docs answer **how** Telemachus differs (the wedge). They did not answer **what it is first, and for whom**. This doc records that decision and its reasoning (open thread #1 from the 2026-06-01 handoff).
 
 ## The decision
 
@@ -17,6 +17,11 @@ The research docs answer **how** Telemachus differs (the wedge). They did not an
 - **Optimization target:** _a better tool for the author_ — not adoption.
 - **Decided now:** personal-first; conversation-primary; scope = parity + wedge + best-of-breed imports (below); built wedge-first.
 - **Recommended trajectory (not the starting identity):** agent-native — agents become first-class at Rung 4+, glass-box replay + fork at Rung 5. See [`thesis.md`](thesis.md).
+
+## Constraints (decided)
+
+- **Free / open-source only.** No paid or hobby-tier SaaS dependencies — it's a hobby project; the author won't pay to run it. Prefer OSS that self-hosts; avoid any tool whose only viable path is a paid/limited cloud tier. Applies to every tech/dependency choice and ADR.
+- **Self-hosted on own infra.** Deployment target = the author's **Proxmox** server (a **Coolify** VM, or a dedicated LXC). Model serving (Ollama/vLLM/llama.cpp), sync server, DB, and app all run there — no external hosting bills.
 
 ## Scope: three concentric rings
 
@@ -34,7 +39,7 @@ The research docs answer **how** Telemachus differs (the wedge). They did not an
 
 ## Why "personal-first" makes parity safe
 
-A general hub at feature parity is, _for a product aimed at strangers_, "a feature-parity slog you'd lose" — the differentiation docs are right about that. **Personal-first neutralizes the critique:** the author is the user, so the payoff is owning the tool, in a stack he loves, extensible by him. Parity is a fine goal because he uses the features; "better stack" is valuable _to him_ even though it's invisible to outsiders. The competitive frame simply doesn't apply until/unless the optional "product later" path is taken.
+A general hub at feature parity is, _for a product aimed at strangers_, "a feature-parity slog you'd lose." **Personal-first neutralizes the critique:** the author is the user, so the payoff is owning the tool, in a stack he loves, extensible by him. Parity is a fine goal because he uses the features; "better stack" is valuable _to him_ even though it's invisible to outsiders. The competitive frame doesn't apply until the optional "product later" path is taken.
 
 ## The real risk (revised)
 
@@ -67,11 +72,11 @@ Odysseus is the reference point; its actual shape confirms the bet:
 
 ## The stack as motivation
 
-The stack is no longer a neutral recommendation — **"better stack" is part of the _why_.** **TypeScript is the lane** (vs Odysseus's Python). **TanStack** (Start / Router / AI / DB) remains the leading recommendation but is **not a hard commit** — it becomes a decision when something is built on it (first ADR). See [`thesis.md`](thesis.md) and `../research/`.
+The stack is no longer a neutral recommendation — **"better stack" is part of the _why_.** **TypeScript is the lane** (vs Odysseus's Python). The **data layer is decided:** TanStack DB + ElectricSQL + PGlite ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)), after the 4-candidate evaluation in [`../research/stack-data-layer.md`](../research/stack-data-layer.md). The **rest of the stack** (TanStack Start/Router, a React UI / component layer, the server runtime, the model/LLM layer) **remains recommended, not committed** — each gets its own ADR when something depends on it. See [`thesis.md`](thesis.md).
 
 ## How this resolves open roadmap questions
 
-- **Roadmap open Q (line 51):** "Does Rung 2 need the agent/run model?" → **No. Ship chat-only.** Starting data spine: `conversations / messages / pins / notes`. The agent/run model arrives at Rung 4 when the trajectory demands it.
+- **Roadmap open Q** ([roadmap-ladder](../specs/roadmap-ladder.md), _Open questions_): "Does Rung 2 need the agent/run model?" → **No. Ship chat-only.** Starting data spine: `conversations / messages / pins / notes`. The agent/run model arrives at Rung 4 when the trajectory demands it.
 
 ## Still open (not decided here)
 
@@ -80,4 +85,4 @@ The stack is no longer a neutral recommendation — **"better stack" is part of 
 - Glass-box "fork" semantics (thread #3).
 - Durable working-memory design — distilled working state vs. vector recall (thread #4).
 - Where local-first sync enters (thread #5).
-- The **stack** remains _recommended, not committed_.
+- **Stack:** the **data layer is decided** ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md): TanStack DB + Electric + PGlite); the **rest** (app framework, UI layer, runtime, model layer) remains _recommended, not committed_.
