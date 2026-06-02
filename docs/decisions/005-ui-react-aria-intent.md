@@ -17,7 +17,7 @@ Constraints that apply:
 - **All-TypeScript**, **free / open-source**; **own the code** (the build-our-own principle — references studied and reimplemented, not black-box component dependencies).
 - Pairs with [ADR-002](002-app-framework-tanstack-start-nitro.md) (TanStack Start).
 
-This decision is **scoped to the component foundation and theming approach only**. The AI **runtime** (streaming, the model/LLM layer that feeds the chat surface) is a separate future ADR; concrete design tokens/theme palettes are deferred to R1.
+This decision is **scoped to the component foundation and theming approach only**. The AI **runtime** (streaming, the model/LLM layer that feeds the chat surface) is decided separately in [ADR-006](006-model-llm-layer.md); concrete design tokens/theme palettes are deferred to R1.
 
 Evidence (verified 2026-06-02): see [`../research/ui-component-landscape.md`](../research/ui-component-landscape.md). Intent UI is built on **react-aria-components + Tailwind CSS v4 + tailwind-variants**, distributed **copy-paste** via the shadcn CLI (source lands in-repo), **MIT**, 80+ components including dark-mode/theming, ~1.9k★ and actively maintained. No AI/chat kit is built on react-aria-components — they are Radix/shadcn-based.
 
@@ -51,7 +51,7 @@ Adopt **react-aria-components** (Adobe) as the behavior/accessibility primitive 
 
 - [`../research/ui-component-landscape.md`](../research/ui-component-landscape.md) records the evaluated field.
 - Design tokens, theme palettes, and the theme switcher are detailed at R1; theme switching is tracked as a ring-1 parity feature.
-- The AI runtime / model-LLM layer gets its own ADR (the chat surface's data comes from there + ADR-001 collections).
+- The AI runtime / model-LLM layer is decided in [ADR-006](006-model-llm-layer.md) (the chat surface's data comes from there + ADR-001 collections).
 
 ## Alternatives considered
 

@@ -11,7 +11,7 @@ A proposed **capability sequence** for Telemachus — wedge-first, each rung ind
 
 ## Scope
 
-This sequences _capabilities_, not dates, and it is not a commitment. **Rungs are ordering handles, not release versions** — actual version numbers (`0.1`, `1.0`) get assigned to real releases separately, as oakoss/ui does, and a release may span several rungs. It assumes the decided stack — TanStack Start + TanStack DB + Drizzle + Better Auth + react-aria-components ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)–[005](../decisions/005-ui-react-aria-intent.md)) — with the **model/LLM layer** (and its model-serving sidecars) still to be decided. If it changes, the rung _order_ mostly holds because it's organized around the data model, not the framework. Out of scope here: the detailed per-rung implementation specs (each earns its own spec when it's next).
+This sequences _capabilities_, not dates, and it is not a commitment. **Rungs are ordering handles, not release versions** — actual version numbers (`0.1`, `1.0`) get assigned to real releases separately, as oakoss/ui does, and a release may span several rungs. It assumes the decided stack ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)–[007](../decisions/007-repo-shape-and-toolchain.md)) — TanStack Start + TanStack DB + Drizzle + Better Auth + react-aria-components + TanStack AI (pluggable Ollama serving) — with only the **server runtime** still to be decided. If it changes, the rung _order_ mostly holds because it's organized around the data model, not the framework. Out of scope here: the detailed per-rung implementation specs (each earns its own spec when it's next).
 
 ## The ladder
 
