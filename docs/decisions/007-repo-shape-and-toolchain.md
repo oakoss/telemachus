@@ -20,7 +20,8 @@ Evidence (verified 2026-06-02): Zod v4 is stable; `@xstate/store` v3 is a <1kb e
 ## Decision
 
 - **Monorepo: Turborepo** — `apps/` + `packages/`, with task caching/orchestration. Single app today; structured for desktop/mobile/shared packages later.
-- **Testing: Vitest** (unit/integration, Vite-native) **+ Playwright** (e2e/browser).
+- **Testing: Vitest** (unit/integration, Vite-native) **+ Playwright** (e2e/browser); integration runs against real Postgres via **Testcontainers** ([ADR-003](003-orm-drizzle.md)).
+- **CI / release: GitHub Actions + Changesets + Renovate** — a job split + a single aggregate gate, Changesets-driven releases (incl. the GHCR image), Renovate for deps/Actions. Full plan: [`ci-cd-release.md`](../specs/ci-cd-release.md).
 - **Validation / schema: Zod (v4)** — runtime schemas at every boundary (server functions, env, forms), shared with Drizzle, Better Auth, and TanStack AI structured output.
 - **Client UI state: `@xstate/store` (v3)** — tiny stores + atoms for ephemeral UI state. Data state stays in TanStack DB. The XState family gives a statechart upgrade path for the agent run/step model (Rungs 4–5).
 

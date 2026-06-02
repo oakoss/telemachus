@@ -30,7 +30,7 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 - The concrete `conversations/messages/parts/...` tables → R1 build, per [`data-model.md`](data-model.md).
 - Streaming, Ollama, TanStack AI → R1.
 - Better Auth (config, tables, client) → **R1 story 1** (`telemachus-1or.1`); **none in E0**. E0 stands up the server Drizzle schema + migration runner the Better Auth adapter plugs into at R1.
-- `packages/extensions`, `packages/ui` extraction, `apps/docs` (Fumadocs), native (Tauri), the standalone `core` service, CI provider → deferred.
+- `packages/extensions`, `packages/ui` extraction, `apps/docs` (Fumadocs), native (Tauri), the standalone `core` service → deferred. CI itself lands in E0 (see the CI / CD / release decision below); the **CD** image-publish/deploy and **docs** deploy are the deferred parts.
 
 ## Architecture
 
@@ -86,7 +86,4 @@ Vertical-ish setup increments; first one is the thinnest "it boots."
 - **No Better Auth in E0.** Auth config/tables/client are R1 story 1 (`telemachus-1or.1`); E0 only stands up the server Drizzle schema + migration runner the adapter plugs into.
 - **App: host for dev, Docker for deploy.** No dev container — `pnpm dev` on the host. Docker runs **backing services** (Compose: Postgres) and packages the **production image** (Coolify); the dev app itself stays on the host.
 - **Tests: real Postgres via Testcontainers.** Integration tests run against a throwaway Postgres container per suite (full fidelity incl. pgvector); E2E too once it exercises the DB (R1+). PGlite dropped; Docker is required for the integration suite.
-
-**Still open:**
-
-- **CI provider** + when (GitHub Actions vs. Coolify build) — deferred, but a `turbo` CI task target should exist.
+- **CI / CD / release — GitHub Actions.** Static/unit/integration/e2e jobs + a single aggregate gate (the required check for branch protection); Changesets releases; GHCR image → Coolify pull deploy; docs on GitHub Pages; Renovate for deps + Actions. Full plan: [`ci-cd-release.md`](ci-cd-release.md).
