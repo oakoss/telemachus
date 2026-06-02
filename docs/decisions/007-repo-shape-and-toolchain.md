@@ -13,14 +13,15 @@ Constraints that apply:
 - **All-TypeScript**, **free / open-source**.
 - Pairs with the prior ADRs — validation feeds [ADR-003](003-orm-drizzle.md) (Drizzle), [ADR-004](004-auth-better-auth.md) (Better Auth), and [ADR-006](006-model-llm-layer.md) (TanStack AI structured output); state complements [ADR-001](001-data-layer-tanstack-db-electric-pglite.md) (TanStack DB holds _data_ state).
 
-This decision is **scoped to repo shape + these libraries**. The concrete package boundaries, the Turbo task pipeline, the CI setup, and the desktop/mobile shells are deferred to R1.
+This decision is **scoped to repo shape + these libraries**. The concrete package boundaries, the Turbo task pipeline, and CI land at **E0** (the scaffold) — detailed in [`scaffold.md`](../specs/scaffold.md) + [`ci-cd-release.md`](../specs/ci-cd-release.md); the desktop/mobile shells come later ([ADR-008](008-architecture-and-topology.md)).
 
 Evidence (verified 2026-06-02): Zod v4 is stable; `@xstate/store` v3 is a <1kb event-based store with first-class TS, selectors, **and atoms** (Zustand-and-Jotai in one), from the XState family. ([XState Store v3](https://stately.ai/blog/2025-02-26-xstate-store-v3))
 
 ## Decision
 
-- **Monorepo: Turborepo** — `apps/` + `packages/`, with task caching/orchestration. Single app today; structured for desktop/mobile/shared packages later.
+- **Monorepo: Turborepo** — `apps/` + `packages/`, with task caching/orchestration. Shared config as **split packages** (`packages/typescript` = tsconfig bases, `packages/eslint` = flat-config presets) so a package needing only a tsconfig doesn't pull lint deps. Single app today; structured for desktop/mobile/shared packages later.
 - **Testing: Vitest** (unit/integration, Vite-native) **+ Playwright** (e2e/browser); integration runs against real Postgres via **Testcontainers** ([ADR-003](003-orm-drizzle.md)).
+- **Lint / format: lean oxlint + ESLint, oxfmt.** **oxlint** = the fast pass — **native rules only (no jsPlugins)**, one root run via **nested configs** (`extends` a shared base; `options.typeAware: true` is root-only). **ESLint** = all third-party plugins + the type-aware **gap**, via per-package presets from `packages/eslint` (authored with `defineConfig`/`globalIgnores` from `eslint/config`), deduped against the root oxlint config with **`eslint-plugin-oxlint`**. **Type-aware = oxlint-first** (tsgolint), ESLint filling uncovered rules; **migrate ESLint→oxlint only as oxlint goes native** (the dedupe self-maintains). **oxfmt** formats JS/TS; markdownlint covers markdown. **Perf:** oxlint on pre-commit; ESLint + type-aware on pre-push/CI.
 - **CI / release: GitHub Actions + Changesets + Renovate** — a job split + a single aggregate gate, Changesets-driven releases (incl. the GHCR image), Renovate for deps/Actions. Full plan: [`ci-cd-release.md`](../specs/ci-cd-release.md).
 - **Validation / schema: Zod (v4)** — runtime schemas at every boundary (server functions, env, forms), shared with Drizzle, Better Auth, and TanStack AI structured output.
 - **Client UI state: `@xstate/store` (v3)** — tiny stores + atoms for ephemeral UI state. Data state stays in TanStack DB. The XState family gives a statechart upgrade path for the agent run/step model (Rungs 4–5).
@@ -40,7 +41,8 @@ Evidence (verified 2026-06-02): Zod v4 is stable; `@xstate/store` v3 is a <1kb e
 
 **Follow-up:**
 
-- Define package boundaries + the Turbo pipeline at R1; CI later.
+- Package boundaries + the Turbo pipeline land at **E0** (the scaffold) — see [`scaffold.md`](../specs/scaffold.md).
+- **Open (decide at E0 config-authoring):** non-JS-file formatting — Prettier/dprint for JSON/YAML vs markdownlint-only; tsconfig `paths` → package **source** so type-aware lint resolves cross-package types without a build; **knip** (unused files/deps/exports) — adopt for repo hygiene (pairs with the no-barrels / explicit-exports rule).
 
 ## Alternatives considered
 

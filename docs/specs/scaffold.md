@@ -16,7 +16,7 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 **In:**
 
 - Turborepo + pnpm workspace (with a pnpm **catalog** for single-version deps across packages — t3code pattern); the `apps/*` + `packages/*` skeleton with explicit package boundaries (no barrels).
-- Toolchain wired into Turbo pipelines: oxlint + oxfmt, Vitest, Playwright, TypeScript (**strict**, with `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`), mise/Node pin, the existing lefthook hooks.
+- Toolchain wired into Turbo pipelines: **lean oxlint** (native-only, root nested config) **+ ESLint** (per-package presets) **+ oxfmt**, Vitest, Playwright, TypeScript (**strict**, with `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`), mise/Node pin, the existing lefthook hooks. Lint topology: [ADR-007](../decisions/007-repo-shape-and-toolchain.md).
 - `apps/web` — a TanStack Start app that boots, renders a placeholder, dev-serves, and builds via the Nitro **node** preset.
 - `packages/db` — **TanStack DB collections + first-party SQLite persistence** (`@tanstack/browser-db-sqlite-persistence`, wa-sqlite/OPFS); leader-elected multi-tab + OPFS are **built in** (no DIY worker binding). A trivial persisted collection + query proves the path (no real tables yet). **Drizzle = server-side** (Postgres) only; server tests run against real Postgres via Testcontainers (not PGlite). (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment: on-device = SQLite, not PGlite.)
 - `packages/shared` — the foundations utilities R1 needs: UUIDv7 ids, Zod-validated env, a Pino logger behind an interface (+ a correlation-id field), and a typed result/error shape.
@@ -36,13 +36,14 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 
 Modular monorepo (ADR-008), Node runtime (ADR-008), server-side Drizzle (Postgres) with client TanStack DB collections (ADR-003 amendment).
 
-| Path              | What                                                                                                               | Notes                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `apps/web`        | TanStack Start app — UI shell + server functions (the web **BFF**)                                                 | Nitro node preset → Coolify later                                                                                    |
-| `packages/core`   | Hono app: agent runtime + domain logic                                                                             | in-process at R1; extractable to a service at Rung 4                                                                 |
-| `packages/db`     | TanStack DB collections + SQLite persistence (wa-sqlite/OPFS); server Drizzle schema (Postgres) + migration runner | client = SQLite, server = Postgres ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md) amendment) |
-| `packages/shared` | Zod schemas/types, env, logger, ids, result/error                                                                  | the foundations utils; explicit subpath exports, no barrels                                                          |
-| `packages/config` | shared tsconfig base, oxlint/oxfmt config                                                                          | tooling-only                                                                                                         |
+| Path                  | What                                                                                                               | Notes                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`            | TanStack Start app — UI shell + server functions (the web **BFF**)                                                 | Nitro node preset → Coolify later                                                                                    |
+| `packages/core`       | Hono app: agent runtime + domain logic                                                                             | in-process at R1; extractable to a service at Rung 4                                                                 |
+| `packages/db`         | TanStack DB collections + SQLite persistence (wa-sqlite/OPFS); server Drizzle schema (Postgres) + migration runner | client = SQLite, server = Postgres ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md) amendment) |
+| `packages/shared`     | Zod schemas/types, env, logger, ids, result/error                                                                  | the foundations utils; explicit subpath exports, no barrels                                                          |
+| `packages/typescript` | shared tsconfig bases (base/react/node)                                                                            | `extends`-only; ~no deps                                                                                             |
+| `packages/eslint`     | ESLint flat-config presets (base/react/node/test/e2e) + plugin deps                                                | imported per-package; **oxlint/oxfmt configs live at the repo root** (oxlint via nested per-package configs)         |
 
 Control flow at R1: browser → `apps/web` (Start server fns = BFF) → `packages/core` (in-process) → DB. The web app reads its local **TanStack DB collections** (SQLite-persisted) reactively; the core owns domain/agent logic. The split is a **seam**, collapsed in-process now.
 
