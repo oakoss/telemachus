@@ -108,7 +108,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 - **(seam) Consistent async states** — empty / loading (skeleton) / error patterns. _Recorded: R1._
 - **(seam) Responsive/mobile-web** — design responsive from the start (PWA precedes native). _Recorded: R1._
 - **(later) Undo/redo** — command pattern for the work surface + editor. _Recorded: feature._
-- **(later) Command palette + keyboard registry** — one shortcut registry, not scattered handlers. _Recorded: feature._
+- **(later) Command palette + keyboard registry** — one shortcut registry, not scattered handlers. **Lean: TanStack Hotkeys** (`@tanstack/react-hotkeys`) — singleton Hotkey Manager, cross-platform `Mod`, multi-key sequences, cheatsheet UI, SSR-friendly; complements react-aria-components (RAC = component keyboard/focus, Hotkeys = global app shortcuts). Alpha (Feb 2026) — pin. First use ~R2 (jump-nav) / the palette. _Recorded: feature._
 - **(later) Clipboard, drag-drop/upload** — copy for code/messages; attachment DnD. _Recorded: feature._
 
 ## Errors, observability, config
