@@ -16,7 +16,7 @@ Detailed implementation plans written AFTER a direction is set — a decision re
 
 ## Format
 
-- Filename: `short-kebab-title.md` (e.g. `agent-runtime.md`, `v0-tracer-bullet.md`)
+- Filename: `short-kebab-title.md` (e.g. `agent-runtime.md`, `streaming-chat.md`)
 - No numbering — specs are organized by topic, not chronology
 - Use the template at [`_template.md`](_template.md)
 

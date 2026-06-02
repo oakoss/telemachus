@@ -2,7 +2,7 @@
 
 - **Status:** Decided (scope), 2026-06-01
 - **Author:** @jbabin91
-- **Related:** [`thesis.md`](thesis.md), [`../research/feature-matrix.md`](../research/feature-matrix.md), [`../research/missing-features.md`](../research/missing-features.md), [`../research/community-requests.md`](../research/community-requests.md), [`../research/deep-dives/`](../research/deep-dives/), [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md), [`../specs/roadmap-ladder.md`](../specs/roadmap-ladder.md), [`pinned-messages-and-notes.md`](pinned-messages-and-notes.md)
+- **Related:** [`thesis.md`](thesis.md), [`../research/feature-matrix.md`](../research/feature-matrix.md), [`../research/missing-features.md`](../research/missing-features.md), [`../research/community-requests.md`](../research/community-requests.md), [`../research/deep-dives/`](../research/deep-dives/), [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md), [`../specs/roadmap.md`](../specs/roadmap.md), [`pinned-messages-and-notes.md`](pinned-messages-and-notes.md)
 
 ## The question
 
@@ -76,7 +76,7 @@ The stack is no longer a neutral recommendation — **"better stack" is part of 
 
 ## How this resolves open roadmap questions
 
-- **Roadmap open Q** ([roadmap-ladder](../specs/roadmap-ladder.md), _Open questions_): "Does Rung 2 need the agent/run model?" → **No. Ship chat-only.** Starting data spine: `conversations / messages / pins / notes`. The agent/run model arrives at Rung 4 when the trajectory demands it.
+- **Roadmap open Q** ([roadmap](../specs/roadmap.md), _Open questions_): "Does Rung 2 need the agent/run model?" → **No. Ship chat-only.** Starting data spine: `conversations / messages / pins / notes`. The agent/run model arrives at Rung 4 when the trajectory demands it.
 
 ## Still open (not decided here)
 
@@ -85,4 +85,4 @@ The stack is no longer a neutral recommendation — **"better stack" is part of 
 - Glass-box "fork" semantics (thread #3).
 - Durable working-memory design — distilled working state vs. vector recall (thread #4).
 - Where local-first sync enters (thread #5).
-- **Stack:** fully decided ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)–[008](../decisions/008-architecture-and-topology.md)) — data layer, app framework + deploy, ORM, auth, UI, model/LLM, repo/toolchain, runtime (Node, revisit Bun), and architecture/topology (modular packages · Hono `core` · Start BFF · Tauri later). Open items are **per-thread design** (e.g. sync entry, thread #5), not stack.
+- **Stack:** fully decided — see [`../../AGENTS.md`](../../AGENTS.md) (the **Decided** block, source of truth) + the ADRs ([`../decisions/`](../decisions/)). Open items are **per-thread design** (e.g. sync entry, thread #5), not stack.

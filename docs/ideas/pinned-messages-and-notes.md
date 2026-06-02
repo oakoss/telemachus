@@ -30,4 +30,4 @@ Because the UI is driven off live queries over synced collections, this is close
 
 ## Status
 
-Idea, not a commitment. Candidate for an early roadmap rung once the chat/agent data model is in place.
+Committed as **Rung 2** (the work surface): schema in [`../specs/data-model.md`](../specs/data-model.md) (`pins` / `notes`), sequence in [`../specs/roadmap.md`](../specs/roadmap.md). This doc remains the origin/provenance — the shadcn request that prompted it.

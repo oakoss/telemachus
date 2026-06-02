@@ -3,7 +3,7 @@
 - **Status:** Draft
 - **Date:** 2026-06-02
 - **Authors:** @jbabin91
-- **Related:** [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md) (data layer), [ADR-003](../decisions/003-orm-drizzle.md) (Drizzle), [`foundations.md`](foundations.md) (cross-cutting), [`roadmap-ladder.md`](roadmap-ladder.md) (rungs), [`../ideas/pinned-messages-and-notes.md`](../ideas/pinned-messages-and-notes.md) (work surface).
+- **Related:** [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md) (data layer), [ADR-003](../decisions/003-orm-drizzle.md) (Drizzle), [`foundations.md`](foundations.md) (cross-cutting), [`roadmap.md`](roadmap.md) (rungs), [`../ideas/pinned-messages-and-notes.md`](../ideas/pinned-messages-and-notes.md) (work surface).
 
 ## Purpose
 

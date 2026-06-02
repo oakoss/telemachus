@@ -3,6 +3,7 @@
 - **Date:** 2026-06-01
 - **Scope:** Survey of active projects in the self-hosted / local-first AI workspace and agent space, to understand what already exists, what patterns recur, and where the gaps are. Informs Telemachus's direction; commits to nothing.
 - **Sources:** GitHub repositories and project sites, fetched 2026-06-01 (linked inline).
+- **Note:** the initial 4-project narrative pass (Odysseus + Hermes / OpenClaw / OpenCode). The survey later widened to **10** code-level deep dives — see [`feature-matrix.md`](feature-matrix.md) (10-project grid) and [`broader-landscape.md`](broader-landscape.md) (adjacent categories) for the complete picture. This doc stays the depth read on those four.
 
 ## Odysseus — the reference project
 

@@ -13,7 +13,7 @@ Scope is three concentric rings: **(1) parity** with Odysseus's surface (built b
 
 ## The trajectory: toward agent-native
 
-Most workspaces, Odysseus included, are **chat-native with agents bolted on**. Telemachus's _destination_ is the inverse — **agent-native**: durable, long-running agents become a first-class object (Rung 4+ on the [roadmap ladder](../specs/roadmap-ladder.md)), with chat as one window into what they are doing; eventually you do not _start_ an agent so much as _check in on_ one. This is the **recommended trajectory, not the starting identity**: the conversation is primary first, and the agent becomes primary as the headline differentiators (glass-box replay + fork) land.
+Most workspaces, Odysseus included, are **chat-native with agents bolted on**. Telemachus's _destination_ is the inverse — **agent-native**: durable, long-running agents become a first-class object (Rung 4+ on the [roadmap](../specs/roadmap.md)), with chat as one window into what they are doing; eventually you do not _start_ an agent so much as _check in on_ one. This is the **recommended trajectory, not the starting identity**: the conversation is primary first, and the agent becomes primary as the headline differentiators (glass-box replay + fork) land.
 
 ## The pillars
 
