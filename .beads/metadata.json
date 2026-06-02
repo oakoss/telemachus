@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "telemachus",
+  "project_id": "e1f3672a-a843-4e62-b0d5-010d67403efb"
+}

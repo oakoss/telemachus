@@ -1,0 +1,30 @@
+{
+  "name": "telemachus",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf node_modules pnpm-lock.yaml",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "lint:md": "markdownlint-cli2 '**/*.md'",
+    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^21.0.2",
+    "commitlint": "^21.0.2",
+    "czg": "^1.13.1",
+    "lefthook": "^2.1.9",
+    "markdownlint-cli2": "^0.22.1",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
+    "typescript": "^6.0.3"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.5.0",
+      "onFail": "download"
+    }
+  }
+}

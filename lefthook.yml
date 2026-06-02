@@ -1,0 +1,50 @@
+# https://lefthook.dev/configuration/
+
+output:
+  - failure
+  - execution_out
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: oxlint
+      glob: '*.{js,jsx,ts,tsx,mjs,cjs}'
+      run: pnpm exec oxlint {staged_files}
+
+    # Sequential (piped) to avoid racing .md writes; oxfmt last so output matches CI's oxfmt --check.
+    - name: format
+      group:
+        piped: true
+        jobs:
+          - name: markdownlint
+            glob: '*.md'
+            run: pnpm exec markdownlint-cli2 --fix {staged_files}
+            stage_fixed: true
+
+          - name: oxfmt
+            glob: '*.{js,jsx,ts,tsx,mjs,cjs,json,jsonc,css,html,md}'
+            run: pnpm exec oxfmt {staged_files}
+            stage_fixed: true
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: pnpm exec commitlint --edit {1}
+
+# bd issue-graph sync over the git remote (refs/dolt/data).
+# Inert until a remote exists — verify a real push/pull round-trip after the GitHub repo is created.
+pre-push:
+  jobs:
+    - name: bd-sync
+      use_stdin: true
+      run: bd hooks run pre-push
+
+post-merge:
+  jobs:
+    - name: bd-sync
+      run: bd hooks run post-merge
+
+post-checkout:
+  jobs:
+    - name: bd-sync
+      run: bd hooks run post-checkout

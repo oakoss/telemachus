@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# TanStack Start / Vite / Nitro (planned stack)
+.output/
+.nitro/
+.vinxi/
+.tanstack/
+.vite/
+
+# Test / coverage
+coverage/
+
+# Local databases — pglite / ElectricSQL / SQLite (planned stack)
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Logs
+*.log
+logs/
+
+# Env (keep examples)
+.env
+.env.*
+!.env.example
+
+# Caches
+.cache/
+.turbo/
+
+# OS / editor cruft
+.DS_Store
+
+# Local-only Claude settings (per-machine)
+.claude/settings.local.json
+
+# review-cycle sentinel + opt-out marker
+.claude/.review-mark
+.claude/.no-review-gate
+
+# Beads / Dolt (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
