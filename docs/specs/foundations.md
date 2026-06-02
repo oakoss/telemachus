@@ -19,6 +19,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 
 - **(now) Client-generated IDs** — `UUIDv7` (time-sortable) or ULID; never DB auto-increment. Offline/multi-device mints IDs on-device; changing PKs later is the worst refactor. _Recorded: #2._
 - **(now) Sync-ready row shape** — every syncable row carries **UTC timestamps**, an **`updatedAt`/version (logical clock)**, and **soft-delete tombstones** (can't hard-delete rows other devices haven't synced). _Recorded: #2 / #5._
+- **(seam) Cascade / referential delete semantics** — deleting a conversation must tombstone its children (messages/parts/pins/notes) and **converge that cascade across devices + both stores** (client SQLite, server Postgres). A single-row tombstone (above) doesn't define cascade; adding it after deletes ship is a second deletion model. _Recorded: #2 / #5._
 - **(now) Ownership/workspace scoping** — put an `ownerId`/workspace on rows even while single-user, so multi-user becomes _additive, not a rewrite_. (Features stay deprioritized; the schema hook is near-free now.) _Recorded: #2._
 - **(now) Attachment / blob storage** — chat with files/images needs a blob strategy (object store / MinIO vs OPFS handle + reference; **not** in-row bytea — blobs don't belong in Electric shapes). Deciding after messages are modeled means a schema migration + sync-path rework. _Recorded: #2._
 - **(now) Idempotency keys** — for webhooks, retries, and **agent steps** (re-running a step must not double-execute side effects). _Recorded: #2 / #3._
@@ -28,15 +29,18 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 - **(seam) PII retention / right-to-erasure** — tombstones handle sync deletes, not hard purge across devices + backups; designing purge after tombstones ship is a second deletion model. _Recorded: #2 / #5._
 - **(seam) Schema ↔ app-version handshake** — a cached PWA client hitting a newer schema needs version gating + a forced-refresh path. _Recorded: #5 / R1-scaffold._
 - **(seam) Export/import friendliness** — keep the schema serialisable for full backup/restore (Odysseus ships JSON export/import). _Recorded: #2._
+- **(seam) Settings/preferences store** — per-conversation `config` has a home; global prefs don't. Decide the **synced vs device-local split** up front: synced (theme, default model, UI prefs) vs device-local (which models are downloaded on _this_ box, local paths). Choosing after a settings table exists means re-homing rows + sync-path rework. _Recorded: #2 / #5._
 
 ## Sync & offline (local-first) — _mostly thread #5_
 
 - **(now) Multi-tab coordination** — **handled first-party** by TanStack DB's SQLite persistence (BroadcastChannel + `navigator.locks` leader election); no DIY worker binding. Still ensure the agent loop / sync don't run duplicated per tab. _Recorded: #5 / R1-scaffold._
-- **(seam) Clock-skew / hybrid logical clock** — the logical clock assumes trustworthy device time; multi-device LWW with skewed clocks silently loses writes. A HLC seam is cheap now, the lost data is unrecoverable later. _Recorded: #5._
+- **(seam) Clock-skew / hybrid logical clock** — the logical clock assumes trustworthy device time; multi-device LWW with skewed clocks silently loses writes. A HLC seam is cheap now, the lost data is unrecoverable later. **The clock must be an injected dependency** (not inline `Date.now()`) so it's swappable for the HLC, tests, and faithful replay; id-gen and the model provider follow the same injection seam (the agent loop stays deterministic + mockable). _Recorded: #5 / #3._
 - **(seam) Migration ordering across un-synced devices** — a device offline for N migrations reconnecting to a newer-schema server needs a catch-up/replay path; brutal to add after the migration runner exists. _Recorded: #5._
 - **(seam) Optimistic write + rollback UX** — consistent pending / synced / error / conflict states across the UI, not per-component. _Recorded: #5._
 - **(seam) Offline detection + write queue** — online/offline signal and a durable local write queue (the Electric write-path). _Recorded: #5._
+- **(seam) Offline session continuity** — Better Auth is server-authoritative (ADR-004), but local-first reads must work offline, so the read path can't gate on a live server session check. Cache the session with an offline grace window; refresh when back online and let writes ride the queue meanwhile. Auth wired as "verify the server every action" makes offline use a later sweep. _Recorded: ADR-004 / #5._
 - **(seam) Storage persistence & quota** — TanStack DB SQLite persistence = wa-sqlite + **OPFS**; browsers can evict. Call `navigator.storage.persist()`; handle quota/eviction. _Recorded: #5 / R1-scaffold._
+- **(seam) Partial replication / shape scoping** — decide _how much_ data is resident on-device. Eagerly materializing every message/conversation doesn't scale (a 5k-message thread, 1k conversations = a storage + query wall); design **windowed Electric shapes** + a lazy "load older history" path. R1 is local-only, so the trap is R1 queries assuming full residency — keep them windowed from the start; retrofitting windowing touches every read path. (Data-residency analogue of list virtualization, which is render-only.) _Recorded: #5 / #2._
 - **(later) Conflict semantics** — server LWW now; Yjs/CRDT only if collab is needed. _Recorded: #5._
 
 ## Runtime & threading
