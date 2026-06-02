@@ -14,7 +14,9 @@
 
 **Why:** (1) no first-party PGlite+TanStack-DB path — using it means a bus-factor-1 community adapter or our own binding; (2) adding Electric later is **additive** on the SQLite path (attach `electricCollectionOptions`) vs. a query-layer rewrite on PGlite; (3) on-device vector recall isn't load-bearing — memory recall is server-side (Postgres + pgvector), distilled blocks sync as text, and sqlite-vec covers the offline edge case; (4) SQLite unifies the web + native on-device store. Evidence: electric.ax (TanStack DB is the recommended client store; PGlite remains a standalone primitive but has no first-party TanStack-DB pairing) + the TanStack DB 0.6 release.
 
-**Unchanged:** TanStack DB + ElectricSQL remain the data layer; the Jazz revisit-trigger (before Rung 5) stands; the persistence engine is a **swappable adapter under TanStack DB**, so the final engine + sync wiring are re-confirmed at the sync rung. The original PGlite reasoning below is kept as the historical record.
+**Unchanged:** TanStack DB + ElectricSQL remain the data layer; the Jazz revisit-trigger (before Rung 5) stands; the persistence engine is a **swappable adapter under TanStack DB**. The original PGlite reasoning below is kept as the historical record.
+
+**Assumption to de-risk early.** The "additive" claim above ((2): attach `electricCollectionOptions` to the SQLite-persistence path) is **unverified** — in particular whether the first-party SQLite persistence adapter composes with Electric sync on the same collection. Validate it with a **spike once the local-DB slice exists (E0)** — _before_ later rungs build collections on the pattern — not deferred to the sync rung. If it fails, trigger the revisit (the Jazz escape hatch, or alternative sync wiring) before the bet has compounded. (Tracked in bd.)
 
 ## Context
 
