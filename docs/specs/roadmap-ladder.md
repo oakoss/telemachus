@@ -41,7 +41,7 @@ Project-level memory distilled from run/conversation history: decisions, what wa
 
 ### Cross-cutting — Local-first sync
 
-True multi-device CRDT sync via ElectricSQL over the existing collections. The backbone behind "follows you across devices." Timing is flexible: build single-device on local TanStack DB from Rung 1, and introduce sync when multi-device matters (naturally alongside Rung 6's cross-device promise). Tier 1.5.
+True multi-device sync via ElectricSQL over the existing collections (server-authoritative LWW; CRDT/Yjs only if collaborative editing is needed — see [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)). The backbone behind "follows you across devices." Timing is flexible: build single-device on local TanStack DB from Rung 1, and introduce sync when multi-device matters (naturally alongside Rung 6's cross-device promise). Tier 1.5.
 
 ### Later — Workspace surfaces & table-stakes depth
 
@@ -52,7 +52,7 @@ Per-component context breakdown + interactive pruning (Tier 2, the still-open sl
 - **Wedge before breadth.** Rung 2's work surface and Rung 5's glass-box are why Telemachus exists; ship visible differentiation early rather than after a long table-stakes slog.
 - **The data model is the spine.** Differentiators (Rungs 5, 6) ride on the `runs`/`runSteps`/conversation collections, so the agent/run model (Rung 4) precedes them.
 - **Cheap-and-demoable first.** Rung 2 is deliberately low-machinery, high-visibility — proof the reactive-UI-over-synced-state bet works before heavier rungs.
-- **Sync is a backbone, not a gate.** Local single-device first; layer CRDT sync when multi-device earns it.
+- **Sync is a backbone, not a gate.** Local single-device first; layer sync when multi-device earns it.
 
 ## Open questions
 

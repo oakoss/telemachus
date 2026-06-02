@@ -1,0 +1,137 @@
+# Foundations: cross-cutting concerns to scaffold early
+
+- **Status:** Living checklist, 2026-06-02
+- **Author:** @jbabin91
+- **Purpose:** The "touch every file later" concerns — things to **decide or scaffold before R1** so they aren't brutal retrofits. Not features; the substrate features sit on.
+- **Companion docs:** the stack is in [`../decisions/`](../decisions/); the schema-level items below land in **thread #2** (data model). This is a living doc — expand it as more surface.
+
+## How to read
+
+Each item is tagged by **retrofit pain**, with the recommended early action and where it's recorded:
+
+- **(now)** — brutal to retrofit; decide/scaffold before or during R1.
+- **(seam)** — cheap to leave a seam now, miserable to add after code hardens.
+- **(later)** — design-aware now, build when its rung arrives.
+
+"Recorded:" points to the thread, ADR, or "R1-scaffold" (do it as the first code lands) that owns it.
+
+## Data & schema — _mostly thread #2_
+
+- **(now) Client-generated IDs** — `UUIDv7` (time-sortable) or ULID; never DB auto-increment. Offline/multi-device mints IDs on-device; changing PKs later is the worst refactor. _Recorded: #2._
+- **(now) Sync-ready row shape** — every syncable row carries **UTC timestamps**, an **`updatedAt`/version (logical clock)**, and **soft-delete tombstones** (can't hard-delete rows other devices haven't synced). _Recorded: #2 / #5._
+- **(now) Ownership/workspace scoping** — put an `ownerId`/workspace on rows even while single-user, so multi-user becomes _additive, not a rewrite_. (Features stay deprioritized; the schema hook is near-free now.) _Recorded: #2._
+- **(now) Attachment / blob storage** — chat with files/images needs a blob strategy (object store / MinIO vs OPFS handle + reference; **not** in-row bytea — blobs don't belong in Electric shapes). Deciding after messages are modeled means a schema migration + sync-path rework. _Recorded: #2._
+- **(now) Idempotency keys** — for webhooks, retries, and **agent steps** (re-running a step must not double-execute side effects). _Recorded: #2 / #3._
+- **(now) Migration discipline** — one Drizzle schema, migrations that run on **both** PGlite (per device) and server Postgres; versioned, backward-compatible. _Recorded: #2._
+- **(seam) Field-level encryption at rest** — if message/memory content must be encrypted before it leaves the device (privacy pillar), the encryption boundary must exist before rows are written/synced; adding it later means re-encrypting the store and breaking shapes. _Recorded: #2 / security ADR._
+- **(seam) Search indexing (FTS / `pgvector`)** — affects the schema and which Postgres extensions PGlite must load (load-time); retrofitting `pgvector` touches the bootstrap. _Recorded: #2 / #4._
+- **(seam) PII retention / right-to-erasure** — tombstones handle sync deletes, not hard purge across devices + backups; designing purge after tombstones ship is a second deletion model. _Recorded: #2 / #5._
+- **(seam) Schema ↔ app-version handshake** — a cached PWA client hitting a newer schema needs version gating + a forced-refresh path. _Recorded: #5 / R1-scaffold._
+- **(seam) Export/import friendliness** — keep the schema serialisable for full backup/restore (Odysseus ships JSON export/import). _Recorded: #2._
+
+## Sync & offline (local-first) — _mostly thread #5_
+
+- **(now) Multi-tab coordination** — multiple tabs share one PGlite instance via a **leader-elected worker** (PGlite's multi-tab worker elects one tab to hold the exclusive connection; others proxy), so the agent loop / sync don't run duplicated per tab. _Recorded: #5 / R1-scaffold._
+- **(seam) Clock-skew / hybrid logical clock** — the logical clock assumes trustworthy device time; multi-device LWW with skewed clocks silently loses writes. A HLC seam is cheap now, the lost data is unrecoverable later. _Recorded: #5._
+- **(seam) Migration ordering across un-synced devices** — a device offline for N migrations reconnecting to a newer-schema server needs a catch-up/replay path; brutal to add after the migration runner exists. _Recorded: #5._
+- **(seam) Optimistic write + rollback UX** — consistent pending / synced / error / conflict states across the UI, not per-component. _Recorded: #5._
+- **(seam) Offline detection + write queue** — online/offline signal and a durable local write queue (the Electric write-path). _Recorded: #5._
+- **(seam) Storage persistence & quota** — PGlite persists to OPFS/IndexedDB; browsers evict. Call `navigator.storage.persist()`, handle quota/eviction, pick OPFS vs IndexedDB deliberately. _Recorded: #5 / R1-scaffold._
+- **(later) Conflict semantics** — server LWW now; Yjs/CRDT only if collab is needed. _Recorded: #5._
+
+## Runtime & threading
+
+- **(now) PGlite in a worker** — keep the reactive DB off the main thread; this forces the data-access layer async/worker-aware from the start. Retrofitting DB-off-main-thread is a rewrite. _Recorded: R1-scaffold (ADR-008)._
+- **(seam) Worker ↔ main-thread RPC contract** — once PGlite is in a worker, every data call crosses a `postMessage` boundary; if that contract isn't typed/versioned from the start, evolving it later breaks call sites silently. _Recorded: R1._
+- **(seam) Compute workers** — embeddings (transformers.js/onnxruntime-web), local STT/TTS (whisper/kokoro WASM) run in workers. _Recorded: R1._
+- **(seam) Service Worker** — gates PWA offline, caching, and web push. _Recorded: R1._
+- **(seam) Graceful shutdown / health checks** — the `core` daemon supervises model-serving child processes; Coolify needs health/readiness + clean restart. _Recorded: ADR-008 / R1._
+- **(seam) Performance budget** — code-splitting + lazy-load (PGlite WASM is ~MBs); a bundle budget from the start. _Recorded: R1._
+
+## Real-time transport
+
+- **(now) Transport abstraction** — the UI subscribes to _events_, never hardcodes `fetch`/`ws`. Default **SSE** for token streaming + **AG-UI** (Hono + TanStack AI native); reserve **WebSockets** for bidirectional/presence later. _Recorded: future ADR (transport)._
+- **(now) Stream resume + reconnection/backpressure** — long agent runs drop connections; resuming a half-finished run is brutal to add later. _Recorded: future ADR / R1._
+- **(now) Cancellation/abort** — thread `AbortController` through the agent loop and LLM calls from day one. _Recorded: ADR-006 / R1._
+- **(seam) Streaming-output persistence boundary** — where a half-streamed message/tool-call is durably written (so a crash mid-stream neither loses nor duplicates it); ties to the optimistic-write states. _Recorded: #3 / R1._
+- **(seam) Async-delivery guarantee** — "agent finished while you were away" needs at-least-once delivery + dedupe over the notification seam, not just a live tab. The delivery contract is the retrofit, not the transport. _Recorded: #5 / feature._
+
+## Security — _candidate for its own ADR (security model)_
+
+- **(now) AuthZ / resource-level permissions** — Better Auth (ADR-004) is _authn_; who-can-read-which-conversation/run is a separate model. Once `ownerId` exists, retrofitting authz after queries assume "single user sees everything" touches every read path. _Recorded: security ADR / #2._
+- **(now) CSP** — set a strict Content-Security-Policy from commit 1; WASM (PGlite) + workers + any inline make a later CSP retrofit miserable. (Tauri adds an IPC allowlist.) _Recorded: security ADR / R1._
+- **(now) Secrets at rest** — API keys, model endpoints, integration creds encrypted at rest; a secrets seam (server Postgres encrypted, or OS keychain on native). _Recorded: security ADR._
+- **(now) Untrusted-content trust boundary** — agents ingest web/doc/email content; treat all tool inputs/outputs as untrusted, with prompt-injection detection + context sandboxing. _Recorded: ADR-006 / #3._
+- **(now) Tool/code-execution sandboxing** — Docker/microVM/permissioned isolation for agent-run shell/code. _Recorded: security ADR._
+- **(now) Model-routing privacy policy** — the privacy-first pillar ("sensitive work pinned to local models, can't leave the box") is an authorization policy in the model-routing seam; design it in, don't bolt on. _Recorded: ADR-006 / security ADR._
+- **(seam) Audit log** — tool executions, credential use, model-routing decisions; an append-only trail is near-free if seeded with the run/step model, painful to reconstruct later. _Recorded: #3 / security ADR._
+- **(seam) Web basics** — CSRF/CORS, security headers, **rate limiting**, scoped API tokens for the Hono `core` API. _Recorded: security ADR._
+- **(seam) XSS / markdown sanitization** — sanitise rendered LLM/user/tool markdown + HTML. _Recorded: R1._
+- **(seam) Secret/PII redaction in logs** — redaction in the logger seam. _Recorded: R1._
+- **(seam) Supply chain** — lockfile, `npm audit`, exact pins + min-release-age (pi's pattern). _Recorded: R1._
+
+## LLM / agent specifics — _mostly ADR-006 / threads #3–4_
+
+- **(now) Replay determinism** — capture seeds, model version, and params in the run/step record so a glass-box replay is faithful. Painful to retrofit into the run model. _Recorded: #3._
+- **(now) Prompt + tool-schema versioning** — replay also needs the _exact_ prompt template and tool definitions used at run time pinned/captured; once prompts evolve, uncaptured old runs become unreplayable. _Recorded: #3._
+- **(seam) Token counting + per-provider tokenizers** — abstract tokenization; counts differ per model. _Recorded: ADR-006._
+- **(seam) Context-window management + compaction** — auto-summarise near the limit (Odysseus does). _Recorded: ADR-006 / #4._
+- **(seam) Cost/usage accounting** — hook token/cost capture into the LLM layer from the start (a top community ask). _Recorded: ADR-006._
+- **(seam) Model capability matrix** — feature-detect tools/vision/json-mode/thinking per model. _Recorded: ADR-006._
+- **(seam) Provider failover / backoff / retry** — fallback chains (Odysseus has them). _Recorded: ADR-006._
+
+## Integrations & jobs
+
+- **(seam) MCP / external-tool connection lifecycle** — tool credentials + connection state share the secrets seam; leave a hook now even though the MCP host arrives at Rung 3. _Recorded: Rung 3 / security ADR._
+- **(seam) Self-host ingress** — receiving webhooks / reaching `core` from outside the home network needs a tunnel (**Tailscale Funnel** on the free Personal tier, or **Cloudflare Tunnel** free). _Recorded: ADR-008 / deploy._
+- **(seam) Job/queue** — scheduled + long-running agent runs need a queue; **pg-boss** (Postgres-backed) reuses the DB we already have. _Recorded: ADR-008 / R1._
+- **(later) Webhooks** — inbound + outbound (HMAC-signed, like Odysseus), with idempotency + retry/queue. _Recorded: ADR / feature._
+- **(later) Notifications** — one seam over web push (SW + VAPID), ntfy, email, in-app. _Recorded: feature._
+
+## i18n / l10n / formatting
+
+- **(seam) i18n from day one** — route every user-facing string through `t()` even English-only. Lean: **Paraglide (inlang)** or Lingui (type-safe, Vite). _Recorded: ADR (i18n)._
+- **(seam) Date/time/number formatting** — one util on **`Intl`** (+ Temporal or `date-fns-tz`); store UTC, render per locale/tz, never hardcode. _Recorded: R1._
+- **(later) ICU pluralization / message format** — if early strings are concatenations, converting to ICU plurals later is a full string sweep. _Recorded: ADR (i18n)._
+- **(later) RTL + `html lang` + locale routing** — react-aria handles much of RTL; wire the rest when a second locale lands. _Recorded: ADR (i18n)._
+- **(later) Grapheme-aware text** — unicode-safe truncation/counting. _Recorded: R1._
+
+## Accessibility
+
+- **(seam) a11y testing in CI** — axe-in-Playwright regression tests (react-aria-components already covers component a11y). _Recorded: R1._
+- **(seam) Live regions for streaming** — announce streaming tokens/agent status politely. _Recorded: R1._
+- **(seam) Focus, motion, contrast** — focus management across route changes, `prefers-reduced-motion`, forced-colors/high-contrast, contrast-checked theme tokens. _Recorded: R1 / ADR-005._
+
+## UI patterns — _set the convention once; painful to unify later_
+
+- **(seam) List virtualization** — TanStack Virtual for long chat/run-step logs from the start. _Recorded: R1._
+- **(seam) URL-as-state / deep-linking** — conversation/run/step addressable via Router search params; shareable. _Recorded: R1._
+- **(seam) Consistent async states** — empty / loading (skeleton) / error patterns. _Recorded: R1._
+- **(seam) Responsive/mobile-web** — design responsive from the start (PWA precedes native). _Recorded: R1._
+- **(later) Undo/redo** — command pattern for the work surface + editor. _Recorded: feature._
+- **(later) Command palette + keyboard registry** — one shortcut registry, not scattered handlers. _Recorded: feature._
+- **(later) Clipboard, drag-drop/upload** — copy for code/messages; attachment DnD. _Recorded: feature._
+
+## Errors, observability, config
+
+- **(seam) Typed error model + boundaries** — Result or typed exceptions + UI error boundaries, not scattered try/catch. _Recorded: R1 / ADR._
+- **(seam) Correlation/trace IDs** — one id threaded request→run→step→tool from the start; the OTel tracer consumes it later, but the propagation seam is the painful retrofit. _Recorded: R1._
+- **(seam) Logger abstraction** — Pino behind an interface (with redaction), not `console.log`. _Recorded: R1._
+- **(seam) Typed env/config** — Zod-validated env schema + config module. _Recorded: R1._
+- **(seam) Health / version endpoint** — a `/version` surfacing build SHA + schema version supports the schema↔app handshake and debugging. _Recorded: R1._
+- **(later) Tracing** — OpenTelemetry across the agent runtime. _Recorded: feature._
+- **(later) Crash/error reporting** — self-hosted/privacy-respecting (not a third-party SaaS by default). _Recorded: feature._
+- **(later) Feature flags** — gate wedge features during build. _Recorded: feature._
+
+## Build, deploy & project hygiene
+
+- **(seam) Reproducible WASM/asset bootstrap** — PGlite, transformers.js, whisper/kokoro WASM are large downloaded assets; pin versions + integrity (SRI) + a caching strategy before load paths scatter. _Recorded: R1._
+- **(seam) First-run bootstrap** — how a fresh self-host instance seeds its DB, generates VAPID keys, and provisions the first user; ad-hoc bootstrap scripts are hard to unify later. Pairs with the typed-env seam. _Recorded: R1._
+- **(seam) Licensing** — the project's own license (oakoss MIT/Apache) + third-party attribution (copied Intent UI etc. are MIT — keep the notice). _Recorded: R1._
+- **(later) Server-DB backup/restore runbook** — beyond app-level JSON export; the self-hoster's Postgres backup/restore is the data-loss blast radius. _Recorded: ops/feature._
+- **(later) API versioning** — version the `core` API for native clients that lag the server. _Recorded: ADR-008 / feature._
+- **(later) Analytics** — opt-in, privacy-respecting, self-hosted if at all. _Recorded: feature._
+
+## Still to expand
+
+This list is not exhaustive — it is the starting substrate. Add concerns as they surface; promote any that grow teeth into their own ADR (the **security model** and **real-time transport** are the two most likely first).
