@@ -23,7 +23,7 @@ It assumes the decided stack — see [`../decisions/`](../decisions/) and the **
 
 ### Rung 1 — Streaming chat, end-to-end
 
-Streaming chat against a local model (Ollama via TanStack AI), with the finished message settling into a TanStack DB / PGlite collection. Proves the whole spine end-to-end: shell → streaming → the streaming-vs-DB boundary → persisted, queryable state. Nothing else.
+Streaming chat against a local model (Ollama via TanStack AI), with the finished message settling into a TanStack DB collection (SQLite-persisted). Proves the whole spine end-to-end: shell → streaming → the streaming-vs-DB boundary → persisted, queryable state. Nothing else.
 
 ### Rung 2 — The work surface _(first differentiator)_
 

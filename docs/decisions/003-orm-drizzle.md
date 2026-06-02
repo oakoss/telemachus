@@ -1,8 +1,19 @@
 # ORM / data access: Drizzle
 
-- **Status:** Accepted
+- **Status:** Accepted — amended 2026-06-02 (Drizzle is the server ORM; client store = TanStack DB/SQLite; see Amendment)
 - **Date:** 2026-06-02
 - **Authors:** @jbabin91
+
+## Amendment (2026-06-02): Drizzle is the server-side ORM
+
+Per [ADR-001](001-data-layer-tanstack-db-electric-pglite.md)'s 2026-06-02 amendment, the client on-device store is **TanStack DB collections + SQLite persistence**, not Drizzle-on-PGlite. Drizzle's role narrows accordingly:
+
+- **Drizzle = the server ORM** (Postgres): schema, `drizzle-kit` migrations, queries, and the Better Auth adapter.
+- **The client does not use Drizzle directly.** Client schema = TanStack DB collection schemas (Standard Schema / Zod), populated by Electric shapes mapped from the server Postgres schema.
+- **"One schema, both stores" → one server Drizzle schema as the source of truth; client collection types derive from it** (via shapes / generated types). That type-flow is a thread-#2 design item.
+- `drizzle-orm/pglite` is retained for **server-side dev/test** (in-memory Postgres). Drizzle + Postgres + `drizzle-kit` otherwise unchanged.
+
+The original (one-schema-both-PGlite-and-Postgres) reasoning below is kept as the historical record.
 
 ## Context
 

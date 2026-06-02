@@ -23,7 +23,7 @@ Evidence (verified 2026-06-02): Hono is a tiny **multi-runtime** (Node/Bun/Deno/
 2. **Dedicated backend = a Hono `core` service — seam now, extract at Rung 4.** The agent runtime + domain logic live in `packages/core`, exposed via a **Hono** API (Hono RPC for typed calls; SSE / AG-UI for the agent stream). R1 runs `core` **in-process** inside the TanStack Start server (Nitro node); at **Rung 4** (persistent agents + run model) it extracts into a **standalone Hono service** when runs must outlive a request. Hono's portability keeps that extraction low-friction.
 3. **TanStack Start = the web BFF.** Start server functions own auth/session, SSR, and web-shaped data, calling `core` (in-process now, over Hono later). **Native apps consume the same Hono `core` API.**
 4. **Runtime: Node (LTS) now, revisit Bun.** Nitro node preset for the app and the `core` service; re-evaluate Bun once the agent runtime + serving management are proven and Bun's long-process / native-addon story matures. Hono and Nitro both run on either, so the door stays open. pnpm stays the package manager.
-5. **Native: PWA-first → Tauri 2.** Ship the web app as an installable PWA (cheap parity), then **Tauri 2** for native desktop + mobile when it's a priority. On native the local store may move from PGlite (WASM) to native SQLite + Electric — a thread-#5 (sync) detail.
+5. **Native: PWA-first → Tauri 2.** Ship the web app as an installable PWA (cheap parity), then **Tauri 2** for native desktop + mobile when it's a priority. The on-device store is **SQLite everywhere** (TanStack DB persistence — wa-sqlite/OPFS in the browser, op-sqlite on native) per [ADR-001](001-data-layer-tanstack-db-electric-pglite.md)'s 2026-06-02 amendment, so web and native share one store; confirm Tauri's adapter firsthand when native work starts.
 6. **Extensions: an internal `packages/extensions`.** Reference pi's extension model (lifecycle hooks, tool/command/UI registration on the agent runtime). It is a monorepo package the apps reference — **not published**. A public extensions SDK is deferred until/unless the product path opens.
 7. **Docs site: `apps/docs` on TanStack Start + Fumadocs** (MDX + Shiki). Recorded here for completeness; minor and swappable.
 
@@ -40,7 +40,7 @@ Evidence (verified 2026-06-02): Hono is a tiny **multi-runtime** (Node/Bun/Deno/
 
 - **More upfront structure** (many packages, explicit boundaries) for a solo project — accepted; modularity is a stated principle and cheaper than retrofitting.
 - **A `core` + BFF is two server surfaces** to reason about even while co-located, and the BFF adds an indirection hop — mitigated by keeping `core` in-process until Rung 4.
-- **Native local-store divergence** (PGlite vs native SQLite) is real work — deferred to thread #5.
+- **Native local store** is now uniform — SQLite everywhere (wa-sqlite browser / op-sqlite native) per ADR-001's amendment; confirm the Tauri adapter at native time. (Sync = thread #5.)
 
 **Follow-up:**
 

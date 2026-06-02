@@ -15,7 +15,7 @@ The collection schema the whole app rides on. Designed once up front because IDs
 - **`parentId` tree + a durable active-leaf pointer.** Branch = walk `parentId` up from the leaf. The leaf pointer is **stored, synced data** (`conversations.currentMessageId`), not recomputed (LibreChat) nor blobbed (Open WebUI).
 - **Append-only glass-box.** `runs`/`runSteps` are append-only with parent pointers (pi's tree + LangGraph's `parent_config`): **rewind-to-step + fork = append a new step whose parent is step N, then move the leaf — never mutate or delete the original.** Finalized steps freeze; only the in-flight step mutates. Compaction **appends a summary node** referencing the kept range; originals stay.
 - **AG-UI / AI-SDK `parts` shape** (TanStack AI is AG-UI-compliant): message content is an ordered union of typed parts; tool-call + result are **one part** with a `state`.
-- **Distilled memory first, vector additive.** Letta-style editable blocks are the spine; `embedding` is a nullable column — the pgvector seam — so vector recall is strictly additive (thread #4). (The pgvector **extension** must be in the PGlite bootstrap from R1 even while the column stays null — extension load is a now-item, not deferrable.)
+- **Distilled memory first, vector additive.** Letta-style editable blocks are the spine, synced to the client as **text**; **semantic recall is server-side** (server Postgres + pgvector). The client (SQLite) holds distilled blocks, not vectors; recall is strictly additive (thread #4), with sqlite-vec an option for the offline edge case. (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment, the on-device store is SQLite — pgvector lives server-side.)
 - **Foundations in every table** ([foundations.md](foundations.md)): UUIDv7 PKs (time-sortable → free ordering, no `childrenIds` arrays), `ownerId` scoping, UTC `createdAt`/`updatedAt`, soft-delete `deletedAt` tombstones, idempotency keys where writes retry.
 
 ### Common columns (every table)
@@ -78,7 +78,7 @@ parts                         // AG-UI/AI-SDK ordered union; content lives here,
   providerMetadata: jsonb?
 ```
 
-> **Tool-part lifecycle & the streaming-persistence boundary.** In-flight part state (tool `input-streaming`→`output-available`; text/reasoning `streaming`→`done`) streams over the live/local channel (SSE + local PGlite) and is **not written to the synced table until it finalizes** — only the finalized row syncs. `parts` is _mutate-while-in-flight-locally, then immutable-and-synced_; sync never replicates half-states. Foundations seam: [streaming-output persistence boundary](foundations.md) — pin at R1.
+> **Tool-part lifecycle & the streaming-persistence boundary.** In-flight part state (tool `input-streaming`→`output-available`; text/reasoning `streaming`→`done`) streams over the live channel (SSE) into client state and is **not written to the persisted collection until it finalizes** — only the finalized row syncs. `parts` is _mutate-while-in-flight-locally, then immutable-and-synced_; sync never replicates half-states. Foundations seam: [streaming-output persistence boundary](foundations.md) — pin at R1.
 
 ### Work surface (Rung 2 — net-new, no schema to copy)
 
@@ -190,7 +190,7 @@ memoryBlock                   // Letta block model = distilled working memory
   readOnly:     boolean       // default false (Letta) — agent can't edit when true
   status:       enum('active'|'superseded'|'archived')
   sourceRef:    jsonb?        // provenance {messageId, toolCallId, ...}
-  embedding:    vector?       // NULLABLE — the pgvector seam; null until vector recall is enabled (thread #4)
+  // embedding lives SERVER-SIDE only (server Postgres + pgvector); the client SQLite store holds text blocks, not vectors. Recall is server-side (thread #4); sqlite-vec is the option if offline recall is ever wanted.
 
 memoryHistory                 // audit / glass-box for memory mutations
   ...common
@@ -201,12 +201,12 @@ memoryHistory                 // audit / glass-box for memory mutations
   actor:         enum('user'|'agent'|'system')
 ```
 
-Memory collection interface: `write`, `consolidate(candidates) → add|update|delete|noop`, `getForContext(scope) → Block[]` (always-rendered), `recall(query) → Block[]` (vector tier, no-op until pgvector is on). Distilled tier mandatory; vector tier strictly additive — the key difference from Odysseus's vector-store-as-all-memory.
+Memory collection interface: `write`, `consolidate(candidates) → add|update|delete|noop`, `getForContext(scope) → Block[]` (always-rendered, offline-capable from synced text), `recall(query) → Block[]` (vector tier — **server-side** Postgres + pgvector; unavailable offline). Distilled tier mandatory; vector tier strictly additive — the key difference from Odysseus's vector-store-as-all-memory.
 
 ## Sync & write-path (ElectricSQL)
 
 - **Read-path:** Electric **shapes** per table, scoped by `ownerId` (+ `conversationId` for messages/parts/pins/notes). The client subscribes; TanStack DB live-queries render.
-- **Write-path (DIY per ADR-001):** local PGlite optimistic write (UUIDv7 minted client-side) → write API → server Postgres → Electric syncs the row back. A branch switch is a single-cell LWW: move the **leaf pointer** (`currentMessageId` / `activeLeafMessageId`), nothing else.
+- **Write-path:** local **TanStack DB optimistic mutation** (UUIDv7 minted client-side) → write API → server Postgres → Electric syncs the row back into the collection (`electricCollectionOptions`); offline writes via `@tanstack/offline-transactions`. A branch switch is a single-cell LWW: move the **leaf pointer** (`currentMessageId` / `activeLeafMessageId`), nothing else.
 - **Deletes** set `deletedAt` (tombstone); never hard-delete a synced row.
 - **Append-only** for `runs`/`runSteps`/finalized `parts`/`compactions` means sync replicates inserts, not rewrites — the ideal Electric workload.
 

@@ -1,8 +1,20 @@
 # Data layer: TanStack DB + ElectricSQL + PGlite
 
-- **Status:** Accepted
+- **Status:** Accepted — amended 2026-06-02 (on-device engine: PGlite → SQLite; see Amendment)
 - **Date:** 2026-06-02
 - **Authors:** @jbabin91
+
+## Amendment (2026-06-02): on-device engine → SQLite
+
+**This supersedes the PGlite leg of the decision below.** Since this ADR was written, **TanStack DB 0.6 (2026-03-25) shipped first-party persistence on SQLite** (wa-sqlite/OPFS in the browser; also Node/RN/Expo/Electron/Capacitor/Tauri/edge), and there is **no first-party TanStack DB ↔ PGlite integration** (only a single-maintainer community adapter). The on-device store therefore changes:
+
+- **Client (browser/native): TanStack DB collections + first-party SQLite persistence** (`@tanstack/*-sqlite-persistence`) — leader-elected multi-tab + OPFS built in.
+- **Server: Postgres + Drizzle + Electric** — unchanged.
+- **PGlite: retained for server-side dev/test only** (`drizzle-orm/pglite` in-memory Postgres), not the client store.
+
+**Why:** (1) no first-party PGlite+TanStack-DB path — using it means a bus-factor-1 community adapter or our own binding; (2) adding Electric later is **additive** on the SQLite path (attach `electricCollectionOptions`) vs. a query-layer rewrite on PGlite; (3) on-device vector recall isn't load-bearing — memory recall is server-side (Postgres + pgvector), distilled blocks sync as text, and sqlite-vec covers the offline edge case; (4) SQLite unifies the web + native on-device store. Evidence: electric.ax (TanStack DB is the recommended client store; PGlite remains a standalone primitive but has no first-party TanStack-DB pairing) + the TanStack DB 0.6 release.
+
+**Unchanged:** TanStack DB + ElectricSQL remain the data layer; the Jazz revisit-trigger (before Rung 5) stands; the persistence engine is a **swappable adapter under TanStack DB**, so the final engine + sync wiring are re-confirmed at the sync rung. The original PGlite reasoning below is kept as the historical record.
 
 ## Context
 

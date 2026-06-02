@@ -22,31 +22,30 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 - **(now) Ownership/workspace scoping** — put an `ownerId`/workspace on rows even while single-user, so multi-user becomes _additive, not a rewrite_. (Features stay deprioritized; the schema hook is near-free now.) _Recorded: #2._
 - **(now) Attachment / blob storage** — chat with files/images needs a blob strategy (object store / MinIO vs OPFS handle + reference; **not** in-row bytea — blobs don't belong in Electric shapes). Deciding after messages are modeled means a schema migration + sync-path rework. _Recorded: #2._
 - **(now) Idempotency keys** — for webhooks, retries, and **agent steps** (re-running a step must not double-execute side effects). _Recorded: #2 / #3._
-- **(now) Migration discipline** — one Drizzle schema, migrations that run on **both** PGlite (per device) and server Postgres; versioned, backward-compatible. _Recorded: #2._
+- **(now) Migration discipline** — **server** Drizzle/Postgres migrations (`drizzle-kit`) + **client** TanStack DB persistence `schemaVersion` migrations (SQLite); two systems now (client store ≠ server), each versioned + backward-compatible. _Recorded: #2._
 - **(seam) Field-level encryption at rest** — if message/memory content must be encrypted before it leaves the device (privacy pillar), the encryption boundary must exist before rows are written/synced; adding it later means re-encrypting the store and breaking shapes. _Recorded: #2 / security ADR._
-- **(seam) Search indexing (FTS / `pgvector`)** — affects the schema and which Postgres extensions PGlite must load (load-time); retrofitting `pgvector` touches the bootstrap. _Recorded: #2 / #4._
+- **(seam) Search indexing (FTS / `pgvector`)** — **server-side** (Postgres + pgvector); affects the server schema. On-device recall (if ever) would use sqlite-vec, not pgvector. _Recorded: #2 / #4._
 - **(seam) PII retention / right-to-erasure** — tombstones handle sync deletes, not hard purge across devices + backups; designing purge after tombstones ship is a second deletion model. _Recorded: #2 / #5._
 - **(seam) Schema ↔ app-version handshake** — a cached PWA client hitting a newer schema needs version gating + a forced-refresh path. _Recorded: #5 / R1-scaffold._
 - **(seam) Export/import friendliness** — keep the schema serialisable for full backup/restore (Odysseus ships JSON export/import). _Recorded: #2._
 
 ## Sync & offline (local-first) — _mostly thread #5_
 
-- **(now) Multi-tab coordination** — multiple tabs share one PGlite instance via a **leader-elected worker** (PGlite's multi-tab worker elects one tab to hold the exclusive connection; others proxy), so the agent loop / sync don't run duplicated per tab. _Recorded: #5 / R1-scaffold._
+- **(now) Multi-tab coordination** — **handled first-party** by TanStack DB's SQLite persistence (BroadcastChannel + `navigator.locks` leader election); no DIY worker binding. Still ensure the agent loop / sync don't run duplicated per tab. _Recorded: #5 / R1-scaffold._
 - **(seam) Clock-skew / hybrid logical clock** — the logical clock assumes trustworthy device time; multi-device LWW with skewed clocks silently loses writes. A HLC seam is cheap now, the lost data is unrecoverable later. _Recorded: #5._
 - **(seam) Migration ordering across un-synced devices** — a device offline for N migrations reconnecting to a newer-schema server needs a catch-up/replay path; brutal to add after the migration runner exists. _Recorded: #5._
 - **(seam) Optimistic write + rollback UX** — consistent pending / synced / error / conflict states across the UI, not per-component. _Recorded: #5._
 - **(seam) Offline detection + write queue** — online/offline signal and a durable local write queue (the Electric write-path). _Recorded: #5._
-- **(seam) Storage persistence & quota** — PGlite persists to OPFS/IndexedDB; browsers evict. Call `navigator.storage.persist()`, handle quota/eviction, pick OPFS vs IndexedDB deliberately. _Recorded: #5 / R1-scaffold._
+- **(seam) Storage persistence & quota** — TanStack DB SQLite persistence = wa-sqlite + **OPFS**; browsers can evict. Call `navigator.storage.persist()`; handle quota/eviction. _Recorded: #5 / R1-scaffold._
 - **(later) Conflict semantics** — server LWW now; Yjs/CRDT only if collab is needed. _Recorded: #5._
 
 ## Runtime & threading
 
-- **(now) PGlite in a worker** — keep the reactive DB off the main thread; this forces the data-access layer async/worker-aware from the start. Retrofitting DB-off-main-thread is a rewrite. _Recorded: R1-scaffold (ADR-008)._
-- **(seam) Worker ↔ main-thread RPC contract** — once PGlite is in a worker, every data call crosses a `postMessage` boundary; if that contract isn't typed/versioned from the start, evolving it later breaks call sites silently. _Recorded: R1._
+- **(now) DB off the main thread** — TanStack DB's SQLite persistence runs wa-sqlite in a dedicated worker (OPFS sync-access handles) — first-party, so the off-main-thread boundary and the worker ↔ main RPC are handled for us (no custom worker contract to own). _Recorded: R1-scaffold (ADR-008)._
 - **(seam) Compute workers** — embeddings (transformers.js/onnxruntime-web), local STT/TTS (whisper/kokoro WASM) run in workers. _Recorded: R1._
 - **(seam) Service Worker** — gates PWA offline, caching, and web push. _Recorded: R1._
 - **(seam) Graceful shutdown / health checks** — the `core` daemon supervises model-serving child processes; Coolify needs health/readiness + clean restart. _Recorded: ADR-008 / R1._
-- **(seam) Performance budget** — code-splitting + lazy-load (PGlite WASM is ~MBs); a bundle budget from the start. _Recorded: R1._
+- **(seam) Performance budget** — code-splitting + lazy-load (wa-sqlite WASM + worker assets); a bundle budget from the start. _Recorded: R1._
 
 ## Real-time transport
 
@@ -59,7 +58,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 ## Security — _candidate for its own ADR (security model)_
 
 - **(now) AuthZ / resource-level permissions** — Better Auth (ADR-004) is _authn_; who-can-read-which-conversation/run is a separate model. Once `ownerId` exists, retrofitting authz after queries assume "single user sees everything" touches every read path. _Recorded: security ADR / #2._
-- **(now) CSP** — set a strict Content-Security-Policy from commit 1; WASM (PGlite) + workers + any inline make a later CSP retrofit miserable. (Tauri adds an IPC allowlist.) _Recorded: security ADR / R1._
+- **(now) CSP** — set a strict Content-Security-Policy from commit 1; WASM (wa-sqlite) + workers + any inline make a later CSP retrofit miserable. (Tauri adds an IPC allowlist.) _Recorded: security ADR / R1._
 - **(now) Secrets at rest** — API keys, model endpoints, integration creds encrypted at rest; a secrets seam (server Postgres encrypted, or OS keychain on native). _Recorded: security ADR._
 - **(now) Untrusted-content trust boundary** — agents ingest web/doc/email content; treat all tool inputs/outputs as untrusted, with prompt-injection detection + context sandboxing. _Recorded: ADR-006 / #3._
 - **(now) Tool/code-execution sandboxing** — Docker/microVM/permissioned isolation for agent-run shell/code. _Recorded: security ADR._
@@ -125,7 +124,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 
 ## Build, deploy & project hygiene
 
-- **(seam) Reproducible WASM/asset bootstrap** — PGlite, transformers.js, whisper/kokoro WASM are large downloaded assets; pin versions + integrity (SRI) + a caching strategy before load paths scatter. _Recorded: R1._
+- **(seam) Reproducible WASM/asset bootstrap** — wa-sqlite, transformers.js, whisper/kokoro WASM are large downloaded assets; pin versions + integrity (SRI) + a caching strategy before load paths scatter. _Recorded: R1._
 - **(seam) First-run bootstrap** — how a fresh self-host instance seeds its DB, generates VAPID keys, and provisions the first user; ad-hoc bootstrap scripts are hard to unify later. Pairs with the typed-env seam. _Recorded: R1._
 - **(seam) Licensing** — the project's own license (oakoss MIT/Apache) + third-party attribution (copied Intent UI etc. are MIT — keep the notice). _Recorded: R1._
 - **(later) Server-DB backup/restore runbook** — beyond app-level JSON export; the self-hoster's Postgres backup/restore is the data-loss blast radius. _Recorded: ops/feature._

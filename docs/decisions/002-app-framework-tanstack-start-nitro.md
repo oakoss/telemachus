@@ -35,7 +35,7 @@ Build for self-hosting with Nitro's **node preset** and run it on the author's P
 
 - **Pre-1.0 framework.** TanStack Start is young; expect API shifts. Pin versions, track releases.
 - **Nitro v3 + `nitro/vite` is under active development** (per the hosting docs) — the deploy plugin may change; pin and watch changelogs.
-- **SSR ↔ local-first hydration needs care.** PGlite lives in the browser; server-rendered output must reconcile with the client-side reactive store (ties to ADR-001's write-path).
+- **SSR ↔ local-first hydration needs care.** The client store (SQLite via TanStack DB, in a worker) lives in the browser; server-rendered output must reconcile with the client-side reactive store (ties to ADR-001's write-path).
 
 **Follow-up:**
 
