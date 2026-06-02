@@ -129,6 +129,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 ## Build, deploy & project hygiene
 
 - **(seam) Reproducible WASM/asset bootstrap** — wa-sqlite, transformers.js, whisper/kokoro WASM are large downloaded assets; pin versions + integrity (SRI) + a caching strategy before load paths scatter. _Recorded: R1._
+- **(now) Developer environment + local services** — one documented toolchain (mise: Node/pnpm) + `docker-compose` for dev backing services (Postgres now; Electric/MinIO later) + `.env.example`. The app runs on the host for dev; Docker only packages the deploy image (Coolify) + runs services. Ollama is native on macOS (Metal GPU), Docker on Linux. Confirm whether the wa-sqlite OPFS VFS needs cross-origin isolation (COOP/COEP) on the dev server (interacts with the CSP item). _Recorded: R1-scaffold (E0)._
 - **(seam) First-run bootstrap** — how a fresh self-host instance seeds its DB, generates VAPID keys, and provisions the first user; ad-hoc bootstrap scripts are hard to unify later. Pairs with the typed-env seam. _Recorded: R1._
 - **(seam) Licensing** — the project's own license (oakoss MIT/Apache) + third-party attribution (copied Intent UI etc. are MIT — keep the notice). _Recorded: R1._
 - **(later) Server-DB backup/restore runbook** — beyond app-level JSON export; the self-hoster's Postgres backup/restore is the data-loss blast radius. _Recorded: ops/feature._

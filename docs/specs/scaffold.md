@@ -15,19 +15,20 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 
 **In:**
 
-- Turborepo + pnpm workspace; the `apps/*` + `packages/*` skeleton with explicit package boundaries (no barrels — t3code pattern).
-- Toolchain wired into Turbo pipelines: oxlint + oxfmt, Vitest, Playwright, TypeScript (strict), mise/Node pin, the existing lefthook hooks.
+- Turborepo + pnpm workspace (with a pnpm **catalog** for single-version deps across packages — t3code pattern); the `apps/*` + `packages/*` skeleton with explicit package boundaries (no barrels).
+- Toolchain wired into Turbo pipelines: oxlint + oxfmt, Vitest, Playwright, TypeScript (**strict**, with `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`), mise/Node pin, the existing lefthook hooks.
 - `apps/web` — a TanStack Start app that boots, renders a placeholder, dev-serves, and builds via the Nitro **node** preset.
 - `packages/db` — **TanStack DB collections + first-party SQLite persistence** (`@tanstack/browser-db-sqlite-persistence`, wa-sqlite/OPFS); leader-elected multi-tab + OPFS are **built in** (no DIY worker binding). A trivial persisted collection + query proves the path (no real tables yet). **Drizzle = server-side** (Postgres) only; `drizzle-orm/pglite` is kept for server dev/test. (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment: on-device = SQLite, not PGlite.)
 - `packages/shared` — the foundations utilities R1 needs: UUIDv7 ids, Zod-validated env, a Pino logger behind an interface (+ a correlation-id field), and a typed result/error shape.
 - `packages/core` — a Hono app skeleton mounted **in-process** behind the Start BFF (a `/health` + `/version` route); not a separate service.
 - A strict **CSP** on the app from the first commit — `wasm-unsafe-eval` + `worker-src`/`child-src blob:` and the wa-sqlite WASM asset origin; pairs with the reproducible-WASM-bootstrap + SRI seam ([`foundations.md`](foundations.md)).
+- **Dev environment + services** — a `docker-compose.yml` for **dev backing services** (Postgres now; Electric/MinIO at later rungs), a production **`Dockerfile`** (Nitro build → Coolify), `.env.example`, and a dev-setup doc. The **app runs on the host for dev** (`pnpm dev`); Docker is for **services + the deploy image**, not the dev app. Unit/CI keep using PGlite in-memory (no Docker).
 
 **Out (later rungs / threads):**
 
 - The concrete `conversations/messages/parts/...` tables → R1 build, per [`data-model.md`](data-model.md).
 - Streaming, Ollama, TanStack AI → R1.
-- Better Auth providers/flows → R1+ (the adapter wiring may stub here).
+- Better Auth (config, tables, client) → **R1 story 1** (`telemachus-1or.1`); **none in E0**. E0 stands up the server Drizzle schema + migration runner the Better Auth adapter plugs into at R1.
 - `packages/extensions`, `packages/ui` extraction, `apps/docs` (Fumadocs), native (Tauri), the standalone `core` service, CI provider → deferred.
 
 ## Architecture
@@ -72,11 +73,18 @@ Vertical-ish setup increments; first one is the thinnest "it boots."
 3. **Local DB path** — `packages/db`: TanStack DB + first-party SQLite persistence (wa-sqlite/OPFS); a persisted collection + live query runs from the app and survives reload. (Server Drizzle/Postgres schema is separate.)
 4. **Foundations utils** — `packages/shared`: UUIDv7, Zod env, Pino logger (+ correlation id, redaction), result/error.
 5. **Core skeleton** — `packages/core`: in-process Hono app with `/health` + `/version`, mounted behind the Start BFF.
+6. **Dev environment & services** — `docker-compose.yml` (Postgres for dev), production `Dockerfile` (Coolify), `.env.example`, dev-setup doc. The app stays on the host for dev.
 
-## Open questions
+## Decisions & open questions
 
-- **Components location:** start copy-paste Intent UI in `apps/web` vs. a `packages/ui` from day one? (Lean `apps/web` until a second surface exists.)
-- **pnpm catalog** for single-version dependency management across packages (t3code pattern) — adopt now or later?
+**Decided (2026-06-02):**
+
+- **tsconfig strictness — high.** `strict` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` from commit 1; ratcheting up later is painful.
+- **pnpm catalog — adopt now.** Single-version dependency management across packages from scaffold (t3code pattern).
+- **Components in `apps/web`.** Copy-paste Intent UI lives in `apps/web` until a second surface needs it; extract a `packages/ui` then.
+- **No Better Auth in E0.** Auth config/tables/client are R1 story 1 (`telemachus-1or.1`); E0 only stands up the server Drizzle schema + migration runner the adapter plugs into.
+- **App: host for dev, Docker for deploy.** No dev container — `pnpm dev` on the host. Docker runs **backing services** (Compose: Postgres now) and packages the **production image** (Coolify). Tests use PGlite in-memory, so unit/CI need no Docker.
+
+**Still open:**
+
 - **CI provider** + when (GitHub Actions vs. Coolify build) — deferred, but a `turbo` CI task target should exist.
-- **tsconfig strictness** ceiling (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`) — set high now (cheap) or relax?
-- **Better Auth** wiring depth in E0 — schema/adapter stub vs. nothing until R1.
