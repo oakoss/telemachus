@@ -72,7 +72,7 @@ Odysseus is the reference point; its actual shape confirms the bet:
 
 ## The stack as motivation
 
-The stack is no longer a neutral recommendation — **"better stack" is part of the _why_.** **TypeScript is the lane** (vs Odysseus's Python). The **data layer is decided:** TanStack DB + ElectricSQL + PGlite ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)), after the 4-candidate evaluation in [`../research/stack-data-layer.md`](../research/stack-data-layer.md). The **rest of the stack** (TanStack Start/Router, a React UI / component layer, the server runtime, the model/LLM layer) **remains recommended, not committed** — each gets its own ADR when something depends on it. See [`thesis.md`](thesis.md).
+The stack is no longer a neutral recommendation — **"better stack" is part of the _why_.** **TypeScript is the lane** (vs Odysseus's Python). The **data layer is decided:** TanStack DB + ElectricSQL + PGlite ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)), after the 4-candidate evaluation in [`../research/stack-data-layer.md`](../research/stack-data-layer.md). The **app framework + deploy** ([ADR-002](../decisions/002-app-framework-tanstack-start-nitro.md): TanStack Start + Nitro), the **ORM** ([ADR-003](../decisions/003-orm-drizzle.md): Drizzle), **auth** ([ADR-004](../decisions/004-auth-better-auth.md): Better Auth), and the **UI layer** ([ADR-005](../decisions/005-ui-react-aria-intent.md): react-aria-components + Intent UI, copy-paste) are now decided too. Still **recommended, not committed**: the server runtime and the model/LLM layer — each gets its own ADR when something depends on it. See [`thesis.md`](thesis.md).
 
 ## How this resolves open roadmap questions
 
@@ -85,4 +85,4 @@ The stack is no longer a neutral recommendation — **"better stack" is part of 
 - Glass-box "fork" semantics (thread #3).
 - Durable working-memory design — distilled working state vs. vector recall (thread #4).
 - Where local-first sync enters (thread #5).
-- **Stack:** the **data layer is decided** ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md): TanStack DB + Electric + PGlite); the **rest** (app framework, UI layer, runtime, model layer) remains _recommended, not committed_.
+- **Stack:** the data layer, app framework + deploy, ORM, auth, and UI layer are decided ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)–[005](../decisions/005-ui-react-aria-intent.md)); still _recommended, not committed_: the **server runtime** and the **model/LLM layer**.
