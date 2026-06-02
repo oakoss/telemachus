@@ -10,7 +10,7 @@
 
 - **Client (browser/native): TanStack DB collections + first-party SQLite persistence** (`@tanstack/*-sqlite-persistence`) — leader-elected multi-tab + OPFS built in.
 - **Server: Postgres + Drizzle + Electric** — unchanged.
-- **PGlite: retained for server-side dev/test only** (`drizzle-orm/pglite` in-memory Postgres), not the client store.
+- **PGlite: dropped** — not the client store (SQLite) and not the test DB; server tests run against real Postgres via Testcontainers (see [ADR-003](003-orm-drizzle.md)).
 
 **Why:** (1) no first-party PGlite+TanStack-DB path — using it means a bus-factor-1 community adapter or our own binding; (2) adding Electric later is **additive** on the SQLite path (attach `electricCollectionOptions`) vs. a query-layer rewrite on PGlite; (3) on-device vector recall isn't load-bearing — memory recall is server-side (Postgres + pgvector), distilled blocks sync as text, and sqlite-vec covers the offline edge case; (4) SQLite unifies the web + native on-device store. Evidence: electric.ax (TanStack DB is the recommended client store; PGlite remains a standalone primitive but has no first-party TanStack-DB pairing) + the TanStack DB 0.6 release.
 

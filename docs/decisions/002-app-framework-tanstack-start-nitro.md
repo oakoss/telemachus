@@ -10,7 +10,7 @@ Telemachus needs a full-stack React **app framework** (SSR, server functions, ro
 
 Constraints that apply:
 
-- **All-TypeScript**; pairs with the decided data layer ([ADR-001](001-data-layer-tanstack-db-electric-pglite.md): TanStack DB + ElectricSQL + PGlite) and the TanStack ecosystem (Router, Query, DB).
+- **All-TypeScript**; pairs with the decided data layer ([ADR-001](001-data-layer-tanstack-db-electric-pglite.md): TanStack DB + ElectricSQL, SQLite on-device) and the TanStack ecosystem (Router, Query, DB).
 - **Free / open-source + self-hostable** — no paid hosting tier ([`Constraints` in scope-positioning](../ideas/scope-positioning.md)); deploy on the author's **Proxmox** server (a **Coolify** VM or LXC).
 
 This decision is **scoped to the app framework and its deployment layer only**. The ORM, auth, and UI component layers are decided separately ([ADR-003](003-orm-drizzle.md), [ADR-004](004-auth-better-auth.md), [ADR-005](005-ui-react-aria-intent.md)). The exact server runtime version and CI pipeline are not decided here.

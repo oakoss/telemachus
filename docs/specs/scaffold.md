@@ -18,11 +18,12 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 - Turborepo + pnpm workspace (with a pnpm **catalog** for single-version deps across packages — t3code pattern); the `apps/*` + `packages/*` skeleton with explicit package boundaries (no barrels).
 - Toolchain wired into Turbo pipelines: oxlint + oxfmt, Vitest, Playwright, TypeScript (**strict**, with `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`), mise/Node pin, the existing lefthook hooks.
 - `apps/web` — a TanStack Start app that boots, renders a placeholder, dev-serves, and builds via the Nitro **node** preset.
-- `packages/db` — **TanStack DB collections + first-party SQLite persistence** (`@tanstack/browser-db-sqlite-persistence`, wa-sqlite/OPFS); leader-elected multi-tab + OPFS are **built in** (no DIY worker binding). A trivial persisted collection + query proves the path (no real tables yet). **Drizzle = server-side** (Postgres) only; `drizzle-orm/pglite` is kept for server dev/test. (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment: on-device = SQLite, not PGlite.)
+- `packages/db` — **TanStack DB collections + first-party SQLite persistence** (`@tanstack/browser-db-sqlite-persistence`, wa-sqlite/OPFS); leader-elected multi-tab + OPFS are **built in** (no DIY worker binding). A trivial persisted collection + query proves the path (no real tables yet). **Drizzle = server-side** (Postgres) only; server tests run against real Postgres via Testcontainers (not PGlite). (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment: on-device = SQLite, not PGlite.)
 - `packages/shared` — the foundations utilities R1 needs: UUIDv7 ids, Zod-validated env, a Pino logger behind an interface (+ a correlation-id field), and a typed result/error shape.
 - `packages/core` — a Hono app skeleton mounted **in-process** behind the Start BFF (a `/health` + `/version` route); not a separate service.
 - A strict **CSP** on the app from the first commit — `wasm-unsafe-eval` + `worker-src`/`child-src blob:` and the wa-sqlite WASM asset origin; pairs with the reproducible-WASM-bootstrap + SRI seam ([`foundations.md`](foundations.md)).
-- **Dev environment + services** — a `docker-compose.yml` for **dev backing services** (Postgres now; Electric/MinIO at later rungs), a production **`Dockerfile`** (Nitro build → Coolify), `.env.example`, and a dev-setup doc. The **app runs on the host for dev** (`pnpm dev`); Docker is for **services + the deploy image**, not the dev app. Unit/CI keep using PGlite in-memory (no Docker).
+- **Dev environment + services** — a `docker-compose.yml` for **dev backing services** (Postgres now; Electric/MinIO at later rungs), a production **`Dockerfile`** (Nitro build → Coolify), `.env.example`, and a dev-setup doc. The **app runs on the host for dev** (`pnpm dev`); Docker is for **dev services + test databases (Testcontainers) + the deploy image**, not the dev app.
+- **DB lifecycle scripts** — `db:generate` / `db:migrate` / `db:seed` / `db:studio` / `db:reset` (drizzle-kit + a custom seed/reset) as `packages/db` package scripts + Turbo tasks; pairs with the migration-discipline seam ([`foundations.md`](foundations.md)).
 
 **Out (later rungs / threads):**
 
@@ -60,7 +61,7 @@ E0 builds **no domain tables** — it stands up the _mechanism_: `packages/db` b
 ## Testing
 
 - **Unit (Vitest):** `packages/shared` — ids, env parsing, logger redaction, result/error.
-- **Integration (Vitest):** `packages/db` — a persisted TanStack DB collection writes + live-queries; the server Drizzle migration runs against Postgres (PGlite in-memory for the test).
+- **Integration (Vitest):** `packages/db` — a persisted TanStack DB collection writes + live-queries; the server Drizzle migration runs against real Postgres (Testcontainers — a throwaway container per suite).
 - **E2E smoke (Playwright):** app boots and renders the placeholder; `/health` returns ok. axe check on the placeholder (a11y baseline).
 - All wired into `turbo test`; green required before E0 is "shipped."
 
@@ -83,7 +84,8 @@ Vertical-ish setup increments; first one is the thinnest "it boots."
 - **pnpm catalog — adopt now.** Single-version dependency management across packages from scaffold (t3code pattern).
 - **Components in `apps/web`.** Copy-paste Intent UI lives in `apps/web` until a second surface needs it; extract a `packages/ui` then.
 - **No Better Auth in E0.** Auth config/tables/client are R1 story 1 (`telemachus-1or.1`); E0 only stands up the server Drizzle schema + migration runner the adapter plugs into.
-- **App: host for dev, Docker for deploy.** No dev container — `pnpm dev` on the host. Docker runs **backing services** (Compose: Postgres now) and packages the **production image** (Coolify). Tests use PGlite in-memory, so unit/CI need no Docker.
+- **App: host for dev, Docker for deploy.** No dev container — `pnpm dev` on the host. Docker runs **backing services** (Compose: Postgres) and packages the **production image** (Coolify); the dev app itself stays on the host.
+- **Tests: real Postgres via Testcontainers.** Integration tests run against a throwaway Postgres container per suite (full fidelity incl. pgvector); E2E too once it exercises the DB (R1+). PGlite dropped; Docker is required for the integration suite.
 
 **Still open:**
 

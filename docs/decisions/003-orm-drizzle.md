@@ -11,7 +11,7 @@ Per [ADR-001](001-data-layer-tanstack-db-electric-pglite.md)'s 2026-06-02 amendm
 - **Drizzle = the server ORM** (Postgres): schema, `drizzle-kit` migrations, queries, and the Better Auth adapter.
 - **The client does not use Drizzle directly.** Client schema = TanStack DB collection schemas (Standard Schema / Zod), populated by Electric shapes mapped from the server Postgres schema.
 - **"One schema, both stores" → one server Drizzle schema as the source of truth; client collection types derive from it** (via shapes / generated types). That type-flow is a thread-#2 design item.
-- `drizzle-orm/pglite` is retained for **server-side dev/test** (in-memory Postgres). Drizzle + Postgres + `drizzle-kit` otherwise unchanged.
+- **Server tests run against real Postgres via Testcontainers** (a throwaway container per suite) for full dialect/extension fidelity (pgvector, etc.); **PGlite is not used**. Drizzle + Postgres + `drizzle-kit` otherwise unchanged.
 
 The original (one-schema-both-PGlite-and-Postgres) reasoning below is kept as the historical record.
 

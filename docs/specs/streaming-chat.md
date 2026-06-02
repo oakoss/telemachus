@@ -83,4 +83,4 @@ No `runStepId` population yet (null until R4); no `runs`/`threads`/`memory` tabl
 - **Model list source:** hardcode a default vs. query Ollama's `/api/tags` for the picker. (Lean: a configured default + optional `/api/tags`.)
 - **Auth providers:** email/password vs. a dev-only session for R1. (Lean: email/password, minimal.)
 - **`config` fields** beyond `{provider, model, temperature}` — extend as needed; keep it open jsonb.
-- **SSR vs client-only** for the chat route at R1 (PGlite→SQLite worker hydration) — confirm at build (ties to ADR-002's SSR↔local-first note).
+- **SSR vs client-only** for the chat route at R1 (SQLite worker hydration) — confirm at build (ties to ADR-002's SSR↔local-first note).
