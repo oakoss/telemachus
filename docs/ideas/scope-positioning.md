@@ -2,7 +2,7 @@
 
 - **Status:** Decided (scope), 2026-06-01
 - **Author:** @jbabin91
-- **Related:** [`thesis.md`](thesis.md), [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md), [`../research/broader-landscape.md`](../research/broader-landscape.md), [`../specs/roadmap-ladder.md`](../specs/roadmap-ladder.md), [`pinned-messages-and-notes.md`](pinned-messages-and-notes.md), [`../research/landscape.md`](../research/landscape.md)
+- **Related:** [`thesis.md`](thesis.md), [`../research/feature-matrix.md`](../research/feature-matrix.md), [`../research/missing-features.md`](../research/missing-features.md), [`../research/community-requests.md`](../research/community-requests.md), [`../research/deep-dives/`](../research/deep-dives/), [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md), [`../specs/roadmap-ladder.md`](../specs/roadmap-ladder.md), [`pinned-messages-and-notes.md`](pinned-messages-and-notes.md)
 
 ## The question
 
@@ -12,7 +12,7 @@ The research docs answer **how** Telemachus differs (the wedge). They did not an
 
 **Telemachus is, first, a personal local-first chat + agent hub — built for its author, with product ambition optional and later.**
 
-- **Why it exists:** a tool with [Odysseus's](landscape.md) capabilities, rebuilt on a stack the author owns and wants to extend (**TypeScript / TanStack**), and made _better_ by closing Odysseus's gaps.
+- **Why it exists:** a tool with [Odysseus's](../research/landscape.md) capabilities, rebuilt on a stack the author owns and wants to extend (**TypeScript / TanStack**), and made _better_ by closing Odysseus's gaps.
 - **Primary object:** the **conversation**. First thing it's best at: the **work surface** (pinned-message checklist + notes scratchpad).
 - **Optimization target:** _a better tool for the author_ — not adoption.
 - **Decided now:** personal-first; conversation-primary; scope = parity + wedge + best-of-breed imports (below); built wedge-first.
@@ -21,10 +21,16 @@ The research docs answer **how** Telemachus differs (the wedge). They did not an
 ## Scope: three concentric rings
 
 1. **Parity** — Odysseus's feature surface (chat, agent, cookbook, deep research, compare, documents, memory/skills, email, notes/tasks, calendar, mobile, extras). Built because the author _uses_ it. Accreted over time, not up front.
-2. **The wedge** — work surface, durable working memory, glass-box replay + fork. Odysseus's gaps; the part that makes Telemachus distinct, not a port. (Tier 1 in [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md).)
-3. **Best-of-breed imports** — features users love in _other_ tools (Open WebUI, LibreChat, Cline/Roo, Cursor, …) that Odysseus lacks. Already catalogued in [`broader-landscape.md`](../research/broader-landscape.md) and the Tier 2/3 lists of [`differentiation-opportunities.md`](../research/differentiation-opportunities.md).
+2. **The wedge (net-new — nobody ships it)** — work surface, durable distilled working memory, glass-box rewind+fork, agent-native reactive data model, local-first sync. **Validated across 10 code-level deep dives** (none ship them) with cross-community demand provenance for the work surface. The part that makes Telemachus distinct, not a port. Detailed in [`../research/missing-features.md`](../research/missing-features.md) (Tier 1) + the ◆ rows of [`../research/feature-matrix.md`](../research/feature-matrix.md).
+3. **Best-of-breed imports** — capabilities proven in the surveyed projects (Odysseus, Open WebUI, LibreChat, Lobe Chat, Hermes, OpenClaw, Letta, OpenCode, t3code, pi) that the parity baseline lacks. Sourced from [`../research/missing-features.md`](../research/missing-features.md) (Tier 2) + [`../research/community-requests.md`](../research/community-requests.md). **References only — studied and reimplemented, never imported as dependencies** (build-our-own, all-TypeScript).
 
 **Build order:** wedge-first (cheap, demoable, motivating), with rings 1 and 3 accreted on the TanStack spine **by personal need** — pulled by what the author actually reaches for, not by parity pressure.
+
+## Build-our-own + the demand-validated basics
+
+- **References, not dependencies.** Every surveyed project — including the TypeScript ones (OpenClaw, OpenCode, t3code, pi) — is an API-design / architecture reference to **study and reimplement**. Telemachus is built from scratch in TypeScript; no third-party agent / LLM / TUI library becomes a core dependency. (Deep dives: [`../research/deep-dives/`](../research/deep-dives/).)
+- **Cover the loud table stakes.** The demand sweep ([`../research/community-requests.md`](../research/community-requests.md)) shows the loudest asks are **chat organization (folders/projects), cost/usage visibility, and voice input** — fold these into early rungs even though they don't differentiate.
+- **Deprioritize multi-user.** The other loud demand (admin / teams / RBAC / SSO) is **off the personal-first identity** — skip until/unless the optional product path opens.
 
 ## Why "personal-first" makes parity safe
 
@@ -69,8 +75,8 @@ The stack is no longer a neutral recommendation — **"better stack" is part of 
 
 ## Still open (not decided here)
 
-- **Consolidated feature inventory** — parity (Odysseus) + wedge + best-of-breed imports, tagged by ring/tier/priority, as the master list the roadmap rungs draw from. Candidate next artifact now that scope = three rings.
-- Data model / collection schema beyond the Rung 1–2 chat spine (thread #2).
+- **Consolidated feature inventory — done.** [`../research/missing-features.md`](../research/missing-features.md) (rings + provenance + build-risk), the rebuilt [`../research/feature-matrix.md`](../research/feature-matrix.md) (10-project comparison), and [`../research/community-requests.md`](../research/community-requests.md) (demand) now cover it.
+- Data model / collection schema beyond the Rung 1–2 chat spine (thread #2). **Natural next thread** — the wedge rides on it.
 - Glass-box "fork" semantics (thread #3).
 - Durable working-memory design — distilled working state vs. vector recall (thread #4).
 - Where local-first sync enters (thread #5).
