@@ -23,6 +23,7 @@ Evidence (verified 2026-06-02): [`@tanstack/ai`](https://github.com/TanStack/ai)
 - **Provider / streaming / tool-transport: TanStack AI** (`@tanstack/ai` + adapters). Provider-agnostic, AG-UI compliant, Zod structured output. **Not** the Vercel AI SDK.
 - **Local serving: target an OpenAI-compatible HTTP endpoint; default Ollama** (self-hosted on Proxmox), with **llama.cpp** (speed) and **vLLM** (concurrency) as swap-in backends. Serving binaries are managed over HTTP from Node — no Python.
 - **Agent loop / orchestration: build our own** (reference pi's `pi-agent-core`, OpenCode). The loop, sessions, compaction, and tool execution wire directly to the ADR-001 collections. TanStack AI supplies the provider/transport, **not** the agent runtime.
+- **External runner first; the "Cookbook" (managed serving) is a later rung.** Launch identity = client to an external OpenAI-compatible endpoint via the provider abstraction. Managed provisioning — hardware-detect → recommend → download → serve, **attach-before-supervise for Ollama** (Odysseus's pattern) — rides that same abstraction and adds **without refactor**, so it's deferred. Hold the seam (route model access through the provider/endpoint resolver, never a hardcoded URL). Sequenced in [`../specs/roadmap.md`](../specs/roadmap.md); Odysseus's install/provisioning is dissected in [`../research/deep-dives/odysseus.md`](../research/deep-dives/odysseus.md).
 
 ## Consequences
 

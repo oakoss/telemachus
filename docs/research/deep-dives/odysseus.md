@@ -108,6 +108,19 @@ Python monolith — **FastAPI + SQLite (SQLAlchemy) + ChromaDB/fastembed**, with
 
 No major unshipped features flagged — mostly reliability (bug fixes, integration audit, cross-platform Cookbook, hardware-keyed model presets, UI error feedback). Read as a broad, fast-moving self-host workspace: code-present across a wide surface, but a days-old repo (maturity/stability not verified).
 
+## Install & provisioning — the "Cookbook"
+
+Added 2026-06-02 from a code-level fetch of the repo (README, Dockerfile, `docker-compose.yml`, `routes/cookbook_routes.py` + `cookbook_helpers.py`, `services/hwfit/`).
+
+- **App install:** always `git clone` + one of — **`docker compose up -d --build`** (canonical; app on `:7000`, bound `127.0.0.1`), native `venv`+`pip`+`python setup.py`+uvicorn, or platform scripts (`start-macos.sh`, `launch-windows.ps1`). A `systemd` unit template + `install-service.sh` ship (manual). **No `curl|sh`, no pip package, no Helm.** First run prints a temp admin password to the logs.
+- **Prereqs:** Python 3.11+; **`tmux` mandatory** for Cookbook; Docker image (`python:3.12-slim`) adds `build-essential`/`cmake`/`git`/`nodejs`/`tmux`/`gosu`. **GPU drivers/CUDA/ROCm are NOT bundled** — host-provided; GPU passthrough is opt-in via `docker/gpu.{nvidia,amd}.yml` overlays, and CUDA/ROCm _userspace_ is installed via Cookbook→Dependencies (passthrough ≠ a CUDA-enabled build).
+- **Runner provisioning = hybrid (managed default, external underneath):** llama.cpp is **built from source** (cmake) lazily, fallback `pip install llama-cpp-python`; **Ollama is port-probed and attached, never owned** (only `ollama serve` if nothing's reachable + CLI present; not auto-installed); vLLM/SGLang are not auto-installed (preflight + install-instructions). Engine + flags are built **client-side** and POSTed; the backend **validates (allowlist) → installs → launches**.
+- **Supervision = weak:** each serve/download runs as a **tmux subprocess** (SSH for remote; detached procs on Windows) with log/PID files, **polled via `tmux capture-pane`** + ~18 hardcoded failure-diagnosis regexes. **No auto-restart** (systemd covers only the app).
+- **Model download:** `hf` CLI in tmux (hf_transfer→plain fallback for clean resume), token encrypted at rest.
+- **Hardware detect + fit scoring:** `services/hwfit/` — nvidia-smi/sysfs/Metal probes + GPU-bandwidth/quant tables + a curated `hf_models.json`. **Pure, portable logic** (the standout to reimplement in TS).
+- **Deployment:** single `Dockerfile`; `docker-compose.yml` bundles app + ChromaDB + SearXNG + ntfy but **NOT any runner** — it reaches a host Ollama via `host.docker.internal` and persists Cookbook-installed runners via volumes. So Odysseus **separates app-deploy from runner-provisioning** (provisioning is an in-app managed feature, not the compose).
+- **Serving boundary:** no in-process manager/daemon — the app shells out (tmux/SSH) to independent OS processes and talks to them purely over **HTTP (OpenAI-compatible)** via an endpoint resolver; served models auto-register as endpoint rows. Telemachus mirrors this as **external-first + an additive Cookbook rung** ([roadmap](../../specs/roadmap.md), [ADR-006](../../decisions/006-model-llm-layer.md)).
+
 ## Capabilities needing first-class TS re-engineering (no Python, no wrappers)
 
 These are the non-trivial ports for an all-TS rebuild (mapping → TS strategy belongs in the parity inventory, not here):

@@ -49,6 +49,10 @@ Project-level memory distilled from run/conversation history: decisions, what wa
 
 True multi-device sync via ElectricSQL over the existing collections (server-authoritative LWW; CRDT/Yjs only if collaborative editing is needed — see [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)). The backbone behind "follows you across devices." Timing is flexible: build single-device on local TanStack DB from Rung 1, and introduce sync when multi-device matters (naturally alongside Rung 6's cross-device promise). Tier 1.5.
 
+### Model provisioning — the Cookbook _(self-host advantage)_
+
+A managed model-serving layer (Odysseus's strongest differentiator): **hardware-detect → recommend → download → serve**. The **external runner is the floor from Rung 1** (the app is a client to an OpenAI-compatible endpoint via the provider abstraction, [ADR-006](../decisions/006-model-llm-layer.md)); the Cookbook is **additive on that seam**, so it's deferred without a refactor cost. Sequenced by need, cheap parts first: hardware-fit scoring (`hwfit` — portable pure logic) and **attach-before-supervise for Ollama**, then model download, then the OS-matrix-heavy parts (build/manage llama.cpp/vLLM, process supervision) last. Reference: [`../research/deep-dives/odysseus.md`](../research/deep-dives/odysseus.md).
+
 ### Later — Workspace surfaces & table-stakes depth
 
 Per-component context breakdown + interactive pruning (Tier 2, the still-open slice); MCP host; model router (privacy-aware); skills + registry; domain surfaces (email/calendar). Sequenced by need, not pre-committed.

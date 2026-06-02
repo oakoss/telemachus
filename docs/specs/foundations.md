@@ -82,6 +82,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 - **(seam) Cost/usage accounting** — hook token/cost capture into the LLM layer from the start (a top community ask). _Recorded: ADR-006._
 - **(seam) Model capability matrix** — feature-detect tools/vision/json-mode/thinking per model. _Recorded: ADR-006._
 - **(seam) Provider failover / backoff / retry** — fallback chains (Odysseus has them). _Recorded: ADR-006._
+- **(seam) Model-endpoint abstraction → managed provisioning** — route all model access through a provider/endpoint resolver (never a hardcoded URL; ADR-006) and earmark an endpoints/providers registry. The managed-serving **Cookbook** (hardware-detect → recommend → download → serve, Odysseus-style; attach-before-supervise for Ollama) rides this seam and is a **later rung** — external runner is the floor. Holding the seam now keeps the Cookbook additive (no refactor). _Recorded: ADR-006 / roadmap._
 
 ## Integrations & jobs
 

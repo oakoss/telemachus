@@ -24,7 +24,7 @@ How the repo gates changes, cuts releases, and ships — for a **self-hostable O
 - npm package publishing — deferred until any `@oakoss/*` package is actually public (all `packages/*` are internal now). Changesets will version private packages without publishing.
 - Native (Tauri) build/sign/release pipelines — a later rung.
 - A bespoke SSH/`compose up` deploy from CI — rejected (couples CI to private infra, helps no self-hoster; the pull model replaces it).
-- **Host provisioning / model-runner install** (Ollama, GPU drivers, model pulls) — a separate, larger thread; **external-runner vs managed/supervised-runner is undecided**. This spec assumes the app reaches an already-running OpenAI-compatible endpoint ([ADR-006](../decisions/006-model-llm-layer.md)); how that endpoint lands on the host is out of scope here.
+- **Host provisioning / model-runner install** (Ollama, GPU drivers, model pulls) — a separate, larger thread. **Decided: external runner first; managed serving (the "Cookbook") is a later rung** ([ADR-006](../decisions/006-model-llm-layer.md), [roadmap](roadmap.md)). This spec assumes the app reaches an already-running OpenAI-compatible endpoint; how that endpoint lands on the host is out of scope here.
 
 ## Architecture
 
