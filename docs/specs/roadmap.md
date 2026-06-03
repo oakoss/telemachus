@@ -11,7 +11,7 @@ The capability sequence for Telemachus — wedge-first, each rung independently 
 
 **This doc is the _why_ and the _order_. bd is the _what_ and the _status_** — epics, stories, tasks, dependencies, and progress live in bd (`bd ready`, `bd epic status`). This doc names the rungs and their rationale; it does not track completion (so it can't drift from bd).
 
-It assumes the decided stack — see [`../decisions/`](../decisions/) and the **Decided** block in [`../../AGENTS.md`](../../AGENTS.md) (the source of truth). The rung _order_ is organized around the data model ([`data-model.md`](data-model.md)), so it mostly holds even if a stack choice changes. Rungs are ordering handles, not release versions — version numbers (`0.1`, `1.0`) attach to real releases separately, and a release may span several rungs.
+It assumes the decided stack — the ADRs ([`../decisions/`](../decisions/)) are the source of truth (stack-at-a-glance in [`../decisions/README.md`](../decisions/README.md)). The rung _order_ is organized around the data model ([`data-model.md`](data-model.md)), so it mostly holds even if a stack choice changes. Rungs are ordering handles, not release versions — version numbers (`0.1`, `1.0`) attach to real releases separately, and a release may span several rungs.
 
 ## How rungs become work
 

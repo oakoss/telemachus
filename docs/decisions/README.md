@@ -4,6 +4,21 @@ This directory records the architectural decisions made for Telemachus. Each dec
 
 Decisions are not commandments. Future evidence can override them. The historical record stays.
 
+## The stack at a glance
+
+One-line index of what's decided; each row links its ADR (the full context, reasoning, and **source of truth**). Update a row in the same change as the ADR it summarizes — the index lives next to the source so it can't drift.
+
+| ADR                                                  | Layer                   | Decision                                                                                          |
+| ---------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
+| [001](001-data-layer-tanstack-db-electric-pglite.md) | Data layer              | TanStack DB + ElectricSQL; **SQLite** on-device (PGlite dropped; server tests via Testcontainers) |
+| [002](002-app-framework-tanstack-start-nitro.md)     | App framework + deploy  | TanStack Start + Nitro (node preset → Coolify)                                                    |
+| [003](003-orm-drizzle.md)                            | ORM                     | Drizzle (server Postgres)                                                                         |
+| [004](004-auth-better-auth.md)                       | Auth                    | Better Auth                                                                                       |
+| [005](005-ui-react-aria-intent.md)                   | UI                      | react-aria-components + Intent UI (Tailwind v4, copy-paste)                                       |
+| [006](006-model-llm-layer.md)                        | Model / LLM             | TanStack AI + Ollama (build-our-own loop; external-runner first, Cookbook later)                  |
+| [007](007-repo-shape-and-toolchain.md)               | Repo / toolchain        | Turborepo · Vitest/Playwright · Zod v4 · @xstate/store · lean oxlint + ESLint                     |
+| [008](008-architecture-and-topology.md)              | Architecture / topology | Node; modular `packages/*`; Hono `core` + Start BFF; PWA → Tauri 2; Fumadocs                      |
+
 ## When to write a decision
 
 - A choice between two or more meaningful technical options is being made

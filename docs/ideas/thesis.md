@@ -9,7 +9,7 @@ A spiritual successor to Odysseus (see [`../research/landscape.md`](../research/
 
 Telemachus is, first, a **personal** local-first chat + agent hub — built for its author, with product ambition optional and later. The **why**: a tool with [Odysseus's](../research/landscape.md) capabilities, rebuilt on a stack the author owns and wants to extend (TypeScript / TanStack), and made _better_ by closing Odysseus's gaps. Its **primary object is the conversation**; the first thing it's best at is the **work surface** (pinned-message checklist + notes scratchpad).
 
-Scope is three concentric rings: **(1) parity** with Odysseus's surface (built because the author uses it), **(2) the wedge** — work surface, durable working memory, glass-box fork — the gaps that make it distinct, and **(3) best-of-breed imports** — features users love in similar tools that Odysseus lacks (catalogued in [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md)). Built **wedge-first** and accreted by personal need. This is the _decided_ identity (the thread-1 scope decision; see [`scope-positioning.md`](scope-positioning.md)).
+Scope is **three concentric rings — parity · the wedge · best-of-breed imports — built wedge-first** and accreted by personal need; this is the _decided_ thread-1 identity, defined in [`scope-positioning.md`](scope-positioning.md).
 
 ## The trajectory: toward agent-native
 
@@ -35,4 +35,4 @@ They share one shape: **reactive UI over synced local agent/conversation state.*
 
 ## Not yet decided
 
-The stack is **decided** — see the ADRs ([`../decisions/`](../decisions/)) and the **Decided** block in [`AGENTS.md`](../../AGENTS.md) (the source of truth). The open work is **per-thread design** — e.g. where **local-first sync** enters (thread #5).
+The stack is **decided** — the ADRs ([`../decisions/`](../decisions/)) are the source of truth (stack-at-a-glance in [`../decisions/README.md`](../decisions/README.md)). The open work is **per-thread design** — e.g. where **local-first sync** enters (thread #5).

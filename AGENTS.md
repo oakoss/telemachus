@@ -73,11 +73,19 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 
 Telemachus — a personal-first, local-first chat + agent hub; a spiritual successor to Odysseus. Research/ideas phase; no application code yet.
 
-**Decided:** the name; placement under oakoss; the thread-1 scope — personal-first; the conversation is the primary object; scope = parity with Odysseus + the wedge + best-of-breed imports; built wedge-first; agent-native is the _trajectory_, not the launch identity. **Stack:** data layer ([ADR-001](docs/decisions/001-data-layer-tanstack-db-electric-pglite.md)) = TanStack DB + ElectricSQL, SQLite on-device (PGlite dropped; server tests use real Postgres via Testcontainers); app framework + deploy ([ADR-002](docs/decisions/002-app-framework-tanstack-start-nitro.md)) = TanStack Start + Nitro (node preset → Coolify); ORM ([ADR-003](docs/decisions/003-orm-drizzle.md)) = Drizzle; auth ([ADR-004](docs/decisions/004-auth-better-auth.md)) = Better Auth; UI ([ADR-005](docs/decisions/005-ui-react-aria-intent.md)) = react-aria-components + Intent UI (copy-paste); model/LLM ([ADR-006](docs/decisions/006-model-llm-layer.md)) = TanStack AI + pluggable Ollama serving (build-our-own agent loop); repo + toolchain ([ADR-007](docs/decisions/007-repo-shape-and-toolchain.md)) = Turborepo, Vitest/Playwright, Zod v4, @xstate/store; runtime + architecture ([ADR-008](docs/decisions/008-architecture-and-topology.md)) = Node (revisit Bun), modular `packages/*` (core/extensions/shared), **Hono** `core` service + Start-as-BFF (extract at Rung 4), native PWA→Tauri 2, extensions = internal `packages/extensions`, docs site = Fumadocs on TanStack Start. **Free / OSS only, self-hosted** (Proxmox / Coolify) — no paid or hobby-tier SaaS.
+**Firm constraints (guardrails — these shape every choice):** free / OSS only, self-hosted (Proxmox / Coolify) — no paid or hobby-tier SaaS; **build-our-own**, all-TypeScript — surveyed projects are references to reimplement, never dependencies; **personal-first**.
 
-**Stack is fully decided** ([ADR-001](docs/decisions/001-data-layer-tanstack-db-electric-pglite.md)–[008](docs/decisions/008-architecture-and-topology.md)). Remaining open items are **per-thread design** (e.g. where local-first sync enters, thread #5), not stack choices. TypeScript is the lane; UI/component enhancements are referenced from HeroUI/AI kits and reimplemented (own-the-code), never added as dependencies.
+**Where things live:** [`docs/README.md`](docs/README.md) is the map. Stack/architecture decisions → [`docs/decisions/`](docs/decisions/) (the ADRs are the source of truth; stack-at-a-glance in its [README](docs/decisions/README.md)). Scope/identity → [`docs/ideas/scope-positioning.md`](docs/ideas/scope-positioning.md). Sequence/rungs → [`docs/specs/roadmap.md`](docs/specs/roadmap.md). Status, open threads, and project memory → `bd prime` / `bd ready`.
 
-See `docs/` for the substance — `ideas/` (thesis, scope-positioning), `research/` (landscape, differentiation), `specs/` (roadmap ladder), `decisions/` (ADRs) — and run `bd prime` for project memory and the open threads (#2 data model, #3 fork semantics, #4 durable memory, #5 sync).
+## Documentation
+
+Keep docs aligned — **one source of truth per concern; everywhere else links, never restates** (the map is [`docs/README.md`](docs/README.md)). When creating or updating a doc:
+
+- State a fact in its **canonical home only**; from anywhere else, **link** to it — don't copy the content (copies drift).
+- **Never declare a derivative the source of truth.** The ADRs are the record for decisions; bd is the record for status. An index/summary points _at_ them; it is not _them_.
+- The **stack-at-a-glance** index ([`docs/decisions/README.md`](docs/decisions/README.md)) is updated **in the same change** as the ADR it summarizes.
+- **bd memories** may summarize for fast recall, but must point to the canonical doc — not a second authority.
+- Before adding a new doc, check the map: if the concern already has a home, extend it rather than starting a parallel one.
 
 ## Build & Test
 
