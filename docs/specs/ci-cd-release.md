@@ -32,13 +32,13 @@ How the repo gates changes, cuts releases, and ships — for a **self-hostable O
 
 Jobs (run in parallel — public repo, free minutes):
 
-| Job             | Does                                                                                            | Notes                                                                                                          |
-| --------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **static**      | `oxfmt --check` + `oxlint` (root) · `turbo lint` (ESLint, per-package) · `markdownlint` · `tsc` | oxlint/oxfmt fast; ESLint carries the type-aware gap ([ADR-007](../decisions/007-repo-shape-and-toolchain.md)) |
-| **unit**        | Vitest unit                                                                                     | no DB                                                                                                          |
-| **integration** | Vitest + **Testcontainers** (real Postgres)                                                     | `ubuntu-latest` (Docker preinstalled); Linux only                                                              |
-| **e2e**         | Playwright (+ axe a11y)                                                                         | E0 = smoke (placeholder + `/health`); DB-backed at R1+                                                         |
-| **summary**     | aggregate gate                                                                                  | `if: always()`, `needs: [static,unit,integration,e2e]`, **fails if any need ≠ success**                        |
+| Job             | Does                                                                                                                | Notes                                                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **static**      | `oxfmt --check` + `oxlint` (root) · `turbo lint` (ESLint, per-package) · `markdownlint` · `knip` + `sherif` · `tsc` | oxlint/oxfmt fast; ESLint carries the type-aware gap ([ADR-007](../decisions/007-repo-shape-and-toolchain.md)); knip/sherif = monorepo hygiene |
+| **unit**        | Vitest unit                                                                                                         | no DB                                                                                                                                          |
+| **integration** | Vitest + **Testcontainers** (real Postgres)                                                                         | `ubuntu-latest` (Docker preinstalled); Linux only                                                                                              |
+| **e2e**         | Playwright (+ axe a11y)                                                                                             | E0 = smoke (placeholder + `/health`); DB-backed at R1+                                                                                         |
+| **summary**     | aggregate gate                                                                                                      | `if: always()`, `needs: [static,unit,integration,e2e]`, **fails if any need ≠ success**                                                        |
 
 - **Branch protection requires only `summary`** — adding/removing jobs never breaks required-check config (the GitHub footgun).
 - **Turbo-driven + cached** — `turbo run` skips unchanged packages; cache via `actions/cache` (or a self-hosted remote cache, e.g. `ducktors/turborepo-remote-cache` on Proxmox). Optional `--filter=...[origin/main]` for affected-only PRs.
