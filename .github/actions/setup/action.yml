@@ -1,0 +1,20 @@
+name: Setup
+description: Install the toolchain (mise → node + pnpm), restore the turbo cache, and install dependencies.
+
+runs:
+  using: composite
+  steps:
+    - name: Install node + pnpm via mise
+      uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+    - name: Restore turbo cache
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      with:
+        path: .turbo
+        key: turbo-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          turbo-${{ runner.os }}-
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash

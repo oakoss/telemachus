@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  merge_group:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: oxfmt
+        run: pnpm format:check
+      - name: oxlint
+        run: pnpm lint
+      - name: eslint
+        run: pnpm lint:eslint
+      - name: markdownlint
+        run: pnpm lint:md
+      - name: tsc
+        run: pnpm typecheck
+      - name: knip
+        run: pnpm knip
+      - name: sherif
+        run: pnpm sherif
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: vitest
+        run: pnpm test
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Setup
+        uses: ./.github/actions/setup
+      # Stub: real suite (Vitest + Testcontainers, real Postgres) lands at telemachus-8zj.6.5.
+      # Keeping the job shape now means branch protection never needs rewiring.
+      - name: vitest
+        run: echo "No integration tests yet — lands at telemachus-8zj.6.5 (Testcontainers harness)."
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Setup
+        uses: ./.github/actions/setup
+      # Stub: Playwright + axe smoke lands at telemachus-8zj.2 (web app renders).
+      # Keeping the job shape now means branch protection never needs rewiring.
+      - name: playwright
+        run: echo "No e2e tests yet — lands at telemachus-8zj.2 (web app renders)."
+
+  summary:
+    name: CI summary
+    runs-on: ubuntu-latest
+    needs: [static, unit, integration, e2e]
+    if: always()
+    timeout-minutes: 5
+    steps:
+      - name: Summarize results
+        run: |
+          {
+            echo "## CI summary"
+            echo ""
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            echo "| Static analysis | \`${{ needs.static.result }}\` |"
+            echo "| Unit tests | \`${{ needs.unit.result }}\` |"
+            echo "| Integration tests | \`${{ needs.integration.result }}\` |"
+            echo "| E2E tests | \`${{ needs.e2e.result }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Fail if any required job did not succeed
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: |
+          echo "A required job failed or was cancelled."
+          exit 1
