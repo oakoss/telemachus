@@ -2,13 +2,17 @@
   "name": "telemachus",
   "type": "module",
   "scripts": {
+    "build": "turbo run build",
     "clean": "rm -rf node_modules pnpm-lock.yaml",
+    "dev": "turbo run dev",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "lint:md": "markdownlint-cli2 '**/*.md'",
-    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'"
+    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^21.0.2",
@@ -18,13 +22,8 @@
     "markdownlint-cli2": "^0.22.1",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.67.0",
-    "typescript": "^6.0.3"
+    "turbo": "^2.9.16",
+    "typescript": "catalog:"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.5.0",
-      "onFail": "download"
-    }
-  }
+  "packageManager": "pnpm@11.5.0"
 }

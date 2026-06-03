@@ -1,2 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Shared dep versions — reference as "catalog:" in any package; bump once here. See docs/specs/scaffold.md.
+catalog:
+  typescript: ^6.0.3
+
 allowBuilds:
   lefthook: true
