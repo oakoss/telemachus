@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./base": "./base.js",
-    "./node": "./node.js",
-    "./test": "./test.js"
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
   },
   "dependencies": {
     "@eslint/js": "catalog:",

@@ -31,10 +31,17 @@ commit-msg:
     - name: commitlint
       run: pnpm exec commitlint --edit {1}
 
-# bd issue-graph sync over the git remote (refs/dolt/data).
-# Inert until a remote exists — verify a real push/pull round-trip after the GitHub repo is created.
+# ESLint + type-aware + typecheck run here (not pre-commit) — too slow per commit;
+# Turbo caches unchanged packages. oxlint/oxfmt stay on pre-commit (fast). ADR-007.
 pre-push:
   jobs:
+    - name: eslint
+      run: pnpm exec turbo run lint
+    - name: typecheck
+      run: pnpm exec turbo run typecheck
+
+    # bd issue-graph sync over the git remote (refs/dolt/data).
+    # Inert until a remote exists.
     - name: bd-sync
       use_stdin: true
       run: bd hooks run pre-push
