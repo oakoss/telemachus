@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
     "clean": "rm -rf node_modules pnpm-lock.yaml",
     "dev": "turbo run dev",
     "format": "oxfmt",
@@ -19,6 +21,7 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@commitlint/config-conventional": "^21.0.2",
     "commitlint": "^21.0.2",
     "czg": "^1.13.1",
