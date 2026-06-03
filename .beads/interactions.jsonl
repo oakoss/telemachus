@@ -1,0 +1,2 @@
+{"id":"int-5c54dcecb8b37e90bc5c548e0b5e401e","kind":"field_change","created_at":"2026-06-03T01:01:16.307634Z","actor":"Jace Babin","issue_id":"telemachus-8zj.1.1","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-b77926680be22dbf411d831d9c37c7e8","kind":"field_change","created_at":"2026-06-03T01:50:42.925472Z","actor":"Jace Babin","issue_id":"telemachus-8zj.1.2","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
