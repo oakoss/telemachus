@@ -69,6 +69,10 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 - After a review passes, **mark the review sentinel, then stop and ask** ("reviewed; ready to commit — suggested message: …") and wait for the explicit go. Committing is never part of "finishing" the work.
 - Doing the work (writing/editing files, running reviews) is always fine; turning it into a commit is the gated step.
 
+### Commit & PR conventions
+
+- **Bead IDs go in the commit footer, never the subject line or PR title.** Reference a bead with a trailer — `Refs: telemachus-8zj.7.1` (or `Closes: <id>`) — and keep subjects and PR titles human-readable. Bead IDs aren't GitHub issues, so they don't auto-link; the footer keeps the trace without cluttering the subject. Conventional Commits otherwise (commitlint `config-conventional`).
+
 ## Project
 
 Telemachus — a personal-first, local-first chat + agent hub; a spiritual successor to Odysseus. Research/ideas phase; no application code yet.
