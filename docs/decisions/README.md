@@ -16,7 +16,7 @@ One-line index of what's decided; each row links its ADR (the full context, reas
 | [004](004-auth-better-auth.md)                       | Auth                    | Better Auth                                                                                       |
 | [005](005-ui-react-aria-intent.md)                   | UI                      | react-aria-components + Intent UI (Tailwind v4, copy-paste)                                       |
 | [006](006-model-llm-layer.md)                        | Model / LLM             | TanStack AI + Ollama (build-our-own loop; external-runner first, Cookbook later)                  |
-| [007](007-repo-shape-and-toolchain.md)               | Repo / toolchain        | Turborepo · Vitest/Playwright · Zod v4 · @xstate/store · lean oxlint + ESLint                     |
+| [007](007-repo-shape-and-toolchain.md)               | Repo / toolchain        | Turborepo · Vitest/Playwright · Zod v4 · @xstate/store · lean oxlint + ESLint · knip + sherif     |
 | [008](008-architecture-and-topology.md)              | Architecture / topology | Node; modular `packages/*`; Hono `core` + Start BFF; PWA → Tauri 2; Fumadocs                      |
 
 ## When to write a decision
