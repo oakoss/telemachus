@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // Explicit paths so knip finds these dotfile configs and doesn't flag czg / @commitlint/config-conventional as unused.
+  "commitlint": { "config": [".commitlintrc.js"] },
+  "markdownlint": { "config": [".markdownlint-cli2.mjs"] },
+}

@@ -1,5 +1,6 @@
 {
   "name": "telemachus",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "turbo run build",
@@ -7,11 +8,13 @@
     "dev": "turbo run dev",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "knip": "knip",
     "lint": "oxlint",
     "lint:eslint": "turbo run lint",
     "lint:fix": "oxlint --fix",
     "lint:md": "markdownlint-cli2 '**/*.md'",
     "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
+    "sherif": "sherif",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
@@ -19,12 +22,19 @@
     "@commitlint/config-conventional": "^21.0.2",
     "commitlint": "^21.0.2",
     "czg": "^1.13.1",
+    "knip": "^6.15.0",
     "lefthook": "^2.1.9",
     "markdownlint-cli2": "^0.22.1",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.68.0",
+    "sherif": "^1.11.1",
     "turbo": "^2.9.16",
     "typescript": "catalog:"
   },
-  "packageManager": "pnpm@11.5.0"
+  "packageManager": "pnpm@11.5.0",
+  "sherif": {
+    "ignoreRule": [
+      "unordered-dependencies"
+    ]
+  }
 }
