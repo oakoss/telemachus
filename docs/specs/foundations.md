@@ -17,7 +17,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 
 ## Data & schema — _mostly thread #2_
 
-- **(now) Client-generated IDs** — `UUIDv7` (time-sortable) or ULID; never DB auto-increment. Offline/multi-device mints IDs on-device; changing PKs later is the worst refactor. _Recorded: #2._
+- **(now) Client-generated IDs** — **`UUIDv7`** (time-sortable, RFC 9562), client-minted offline, stored as a native Postgres `uuid`; never DB auto-increment (changing PKs later is the worst refactor). **Decided 2026-06-03:** ULID dropped — its base32 edge is lost in a `uuid` column, and UUIDv7 is the standard with native Postgres/Drizzle/Electric support. **NanoID** is reserved for a later **share-link / public-handle** seam — a revocable share-_token_ (own table), additive, never the PK. Branded TS id types + the generator (the `uuid` lib's `v7({ msecs })` behind an owned `IdGenerator` seam — injected clock + rng for deterministic replay/tests; exact ordering uses an explicit `seq`, not the id) land at `.4` (`packages/shared`). _Recorded: #2._
 - **(now) Sync-ready row shape** — every syncable row carries **UTC timestamps**, an **`updatedAt`/version (logical clock)**, and **soft-delete tombstones** (can't hard-delete rows other devices haven't synced). _Recorded: #2 / #5._
 - **(seam) Cascade / referential delete semantics** — deleting a conversation must tombstone its children (messages/parts/pins/notes) and **converge that cascade across devices + both stores** (client SQLite, server Postgres). A single-row tombstone (above) doesn't define cascade; adding it after deletes ship is a second deletion model. _Recorded: #2 / #5._
 - **(now) Ownership/workspace scoping** — put an `ownerId`/workspace on rows even while single-user, so multi-user becomes _additive, not a rewrite_. (Features stay deprioritized; the schema hook is near-free now.) _Recorded: #2._
@@ -94,7 +94,7 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 
 ## i18n / l10n / formatting
 
-- **(seam) i18n from day one** — route every user-facing string through `t()` even English-only. Lean: **Paraglide (inlang)** or Lingui (type-safe, Vite). _Recorded: ADR (i18n)._
+- **(seam) i18n from day one** — route every user-facing string through `t()` even English-only, via a standalone **`@oakoss/i18n`** package (wraps **Paraglide (inlang)** or Lingui behind our `t()` interface), landing at the **UI rung**. Errors localize **at the UI boundary** via `errors.<code>` keys (+ a `_category` fallback); `packages/shared` stays i18n-agnostic — it emits stable `code`s, the backend never localizes, and dev-facing text (logs, `Error.message`) is English. _Recorded: ADR (i18n) / #2._
 - **(seam) Date/time/number formatting** — one util on **`Intl`** (+ Temporal or `date-fns-tz`); store UTC, render per locale/tz, never hardcode. _Recorded: R1._
 - **(later) ICU pluralization / message format** — if early strings are concatenations, converting to ICU plurals later is a full string sweep. _Recorded: ADR (i18n)._
 - **(later) RTL + `html lang` + locale routing** — react-aria handles much of RTL; wire the rest when a second locale lands. _Recorded: ADR (i18n)._
@@ -118,13 +118,13 @@ Each item is tagged by **retrofit pain**, with the recommended early action and 
 
 ## Errors, observability, config
 
-- **(seam) Typed error model + boundaries** — Result or typed exceptions + UI error boundaries, not scattered try/catch. _Recorded: R1 / ADR._
-- **(seam) Correlation/trace IDs** — one id threaded request→run→step→tool from the start; the OTel tracer consumes it later, but the propagation seam is the painful retrofit. _Recorded: R1._
-- **(seam) Logger abstraction** — Pino behind an interface (with redaction), not `console.log`. _Recorded: R1._
+- **(now) Typed error model + boundaries** — **Decided 2026-06-03 (lands at `.4`):** hybrid — **`Result<T, AppError>`** at boundaries (validation, parsing, I/O, every agent tool/step) + **`throw`** for invariants/programmer bugs. **`AppError`** = `{ code, category, params?, cause?, correlationId }`, `extends Error` (`.message = code`), **no user-facing string** (localized at the UI boundary via `errors.<code>`). Must be **serializable** (`toJSON`, narrowed for sync/persist/replay — code + category + safe params, never raw `cause`/stack) since errors cross the run-step, Electric-sync, and glass-box-replay boundaries. The boundary maps `code`→i18n, logs internal detail (Pino, redacted), and reports. _Recorded: `.4` / #3._
+- **(seam) Correlation/trace IDs** — one id threaded request→run→step→tool from the start, carried on a **context object shaped to become an OpenTelemetry trace context** (`trace_id`/`span_id`) so the OTel tracer adopts it later without a rewrite. The **same injected context feeds logger, error-reporter, and the future tracer/metrics** — one shape, many sinks (the injected-port convention). _Recorded: R1 / `.4`._
+- **(seam) Logger abstraction** — Pino behind an interface (with redaction), not `console.log`. First of the **injected observability ports** — logger, error-reporter, and later metrics/tracer share one shape (injected interface + no-op/default + boundary call), so each new concern is additive. _Recorded: R1 / `.4`._
 - **(seam) Typed env/config** — Zod-validated env schema + config module. _Recorded: R1._
 - **(seam) Health / version endpoint** — a `/version` surfacing build SHA + schema version supports the schema↔app handshake and debugging. _Recorded: R1._
 - **(later) Tracing** — OpenTelemetry across the agent runtime. _Recorded: feature._
-- **(later) Crash/error reporting** — self-hosted/privacy-respecting (not a third-party SaaS by default). _Recorded: feature._
+- **(seam) Crash/error reporting** — behind an **`ErrorReporter` port** (same injected-port shape as the logger; no-op default shipped at `.4`, the boundary already calls it), so adding **self-hosted Sentry or GlitchTip** later is a config swap with zero call-site changes. Redact + honor "sensitive stays local" **before** capture; never a third-party SaaS (cost/self-host rule). _Recorded: `.4` / feature._
 - **(later) Feature flags** — gate wedge features during build. _Recorded: feature._
 
 ## Build, deploy & project hygiene
