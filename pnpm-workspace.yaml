@@ -4,6 +4,7 @@ packages:
 
 # Shared dep versions — reference as "catalog:" in any package; bump once here. See docs/specs/scaffold.md.
 catalog:
+  '@t3-oss/env-core': ^0.13.11
   typescript: ^6.0.3
   eslint: ^10.4.1
   '@eslint/js': ^10.0.1
@@ -13,6 +14,7 @@ catalog:
   globals: ^17.6.0
   uuid: ^14.0.0
   vitest: ^4.1.8
+  zod: ^4.4.3
 
 allowBuilds:
   lefthook: true
