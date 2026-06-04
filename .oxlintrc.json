@@ -293,6 +293,10 @@
         "react/self-closing-comp": "error",
         "react/exhaustive-deps": "off"
       }
+    },
+    {
+      "files": ["**/*.{test,spec}.{js,jsx,ts,tsx}"],
+      "rules": { "no-console": "off" }
     }
   ],
   "options": { "maxWarnings": 0, "reportUnusedDisableDirectives": "error" },
