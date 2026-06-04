@@ -3,4 +3,7 @@
   // Explicit paths so knip finds these dotfile configs and doesn't flag czg / @commitlint/config-conventional as unused.
   "commitlint": { "config": [".commitlintrc.js"] },
   "markdownlint": { "config": [".markdownlint-cli2.mjs"] },
+  // Public-API types in our libraries are often only referenced in their own
+  // file until a consumer lands; don't flag those (values are still checked).
+  "ignoreExportsUsedInFile": { "type": true },
 }
