@@ -3,6 +3,7 @@ import vitest from '@vitest/eslint-plugin';
 import oxlint from 'eslint-plugin-oxlint';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
+import path from 'node:path';
 import tseslint from 'typescript-eslint';
 
 const base = defineConfig(
@@ -17,7 +18,13 @@ const base = defineConfig(
   tseslint.configs.recommended,
 );
 
-const oxlintDisable = defineConfig(oxlint.configs['flat/recommended']);
+// Read from the real root .oxlintrc.json so the dedupe tracks exactly what we
+// enable. typeAware:true also drops the type-aware rules oxlint runs on
+// pre-push/CI, leaving ESLint only the rules oxlint doesn't cover.
+const oxlintDisable = oxlint.buildFromOxlintConfigFile(
+  path.join(import.meta.dirname, '../../.oxlintrc.json'),
+  { typeAware: true },
+);
 
 export const node = defineConfig({
   languageOptions: { globals: globals.node },

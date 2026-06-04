@@ -43,6 +43,7 @@ Evidence (verified 2026-06-02): Zod v4 is stable; `@xstate/store` v3 is a <1kb e
 
 - Package boundaries + the Turbo pipeline land at **E0** (the scaffold) — see [`scaffold.md`](../specs/scaffold.md).
 - **Decided at E0 (2026-06-03):** non-JS-file formatting → **oxfmt** (JSON/JSONC/YAML/CSS/HTML) + **markdownlint** (md), not Prettier/dprint; cross-package types resolve from **source** via per-package `exports` → `./src` (`moduleResolution: bundler`, no build) rather than tsconfig `paths`; **knip** (unused files/deps/exports) + **sherif** (package.json/workspace consistency — `unordered-dependencies` disabled, oxfmt owns ordering) adopted for repo hygiene, to run in CI + locally (CI at E0.7). Pairs with the no-barrels / explicit-exports rule.
+- **oxlint type-aware enabled at E0.9 (2026-06-03):** `oxlint-tsgolint` + `oxlint --type-aware`, scoped to **pre-push + CI only** (fast, non-type-aware oxlint stays on pre-commit per the perf split above). Per-package `tsconfig.json`s are the type-info anchors — **no root tsconfig needed** (tsgolint resolves each package's config from a root run; verified empirically). The ESLint dedupe (`eslint-plugin-oxlint`) reads the real root `.oxlintrc.json` via `buildFromOxlintConfigFile(…, { typeAware: true })`, so ESLint drops exactly the rules oxlint covers — type-aware included — and keeps only the gap.
 
 ## Alternatives considered
 

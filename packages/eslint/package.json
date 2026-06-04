@@ -9,6 +9,9 @@
       "default": "./index.js"
     }
   },
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@eslint/js": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
@@ -16,5 +19,8 @@
     "eslint-plugin-oxlint": "catalog:",
     "globals": "catalog:",
     "typescript-eslint": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
   }
 }
