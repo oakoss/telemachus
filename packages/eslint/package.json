@@ -4,14 +4,12 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "default": "./index.js"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
     "clean": "rm -rf .turbo coverage node_modules",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@eslint-react/eslint-plugin": "catalog:",
@@ -26,6 +24,9 @@
     "typescript-eslint": "catalog:"
   },
   "devDependencies": {
+    "@oakoss/typescript": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }

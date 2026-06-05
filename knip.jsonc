@@ -6,4 +6,6 @@
   // Public-API types in our libraries are often only referenced in their own
   // file until a consumer lands; don't flag those (values are still checked).
   "ignoreExportsUsedInFile": { "type": true },
+  // jiti is loaded implicitly by ESLint to parse the .ts flat configs.
+  "ignoreDependencies": ["jiti"],
 }

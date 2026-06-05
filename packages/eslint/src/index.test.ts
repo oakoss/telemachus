@@ -1,15 +1,10 @@
 import { expect, test } from 'vitest';
 
-import {
-  config,
-  react,
-  sort,
-  tailwind,
-  tanstack,
-  typeChecked,
-} from './index.js';
+import { config, react, sort, tailwind, tanstack, typeChecked } from './index';
 
-function mergedRules(...layers) {
+function mergedRules(
+  ...layers: Parameters<typeof config>
+): Record<string, unknown> {
   return Object.assign(
     {},
     ...config(...layers).flatMap((layer) => (layer.rules ? [layer.rules] : [])),
@@ -55,24 +50,32 @@ test('react/tanstack/tailwind layers contribute their plugin rules', () => {
 
   const tw = config(tailwind('./MARKER.css'));
   const settings = tw.find((l) => l.settings?.['better-tailwindcss'])?.settings;
-  expect(settings?.['better-tailwindcss'].entryPoint).toBe('./MARKER.css');
+  // settings values are typed `unknown` by ESLint; assert the shape we set.
+  const tailwindSettings = settings?.['better-tailwindcss'] as
+    | { entryPoint: string }
+    | undefined;
+  expect(tailwindSettings?.entryPoint).toBe('./MARKER.css');
 });
 
 // The empty scaffold can't trigger sort rules, so prove the plugin resolved —
 // inert rule strings exist even when the plugin fails to load.
 test('sort layer wires the perfectionist plugin', () => {
   const plugin = config(sort).find((l) => l.plugins?.perfectionist)?.plugins
-    .perfectionist;
+    ?.perfectionist;
   expect(plugin?.rules?.['sort-jsx-props']).toBeDefined();
   expect(plugin?.rules?.['sort-union-types']).toBeDefined();
   expect(plugin?.rules?.['sort-objects']).toBeDefined();
 
-  const [, opts] = mergedRules(sort)['perfectionist/sort-jsx-props'];
+  // A rule entry is `level | [level, ...options]`; assert the options tuple.
+  const [, opts] = mergedRules(sort)['perfectionist/sort-jsx-props'] as [
+    unknown,
+    { customGroups: unknown[]; groups: string[] },
+  ];
   expect(opts.groups).toContain('callback');
   expect(opts.customGroups).toContainEqual(
     expect.objectContaining({
-      groupName: 'callback',
       elementNamePattern: '^on.+',
+      groupName: 'callback',
     }),
   );
 });

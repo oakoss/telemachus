@@ -1,0 +1,1 @@
+{ "extends": "@oakoss/typescript/node.json", "include": ["src/**/*.ts"] }

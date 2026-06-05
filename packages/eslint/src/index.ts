@@ -22,11 +22,11 @@ const base = defineConfig(
   tseslint.configs.recommended,
 );
 
-// Read from the real root .oxlintrc.json so the dedupe tracks exactly what we
-// enable. typeAware:true also drops the type-aware rules oxlint runs, leaving
-// ESLint only the rules oxlint doesn't cover.
+// typeAware:true drops the type-aware rules oxlint runs, leaving ESLint only
+// the rules oxlint doesn't cover. Path is relative to src/ (one level deeper
+// than the old index.js at the package root).
 const oxlintDisable = oxlint.buildFromOxlintConfigFile(
-  path.join(import.meta.dirname, '../../.oxlintrc.json'),
+  path.join(import.meta.dirname, '../../../.oxlintrc.json'),
   { typeAware: true },
 );
 
@@ -43,9 +43,9 @@ export const test = defineConfig({
   files: ['**/*.{test,spec}.{ts,tsx}'],
 });
 
-// oxlint owns react/jsx-a11y/hooks natively; this layer adds @eslint-react's
-// semantic rules on top. The dedupe doesn't touch @eslint-react/*, so the
-// opt-outs (per telemachus-8zj.10) are set manually.
+// oxlint owns react/jsx-a11y/hooks natively; this layer adds @eslint-react
+// semantic rules. The dedupe doesn't cover @eslint-react/*, so opt-outs
+// (per telemachus-8zj.10) are set manually.
 export const react = defineConfig({
   files: ['**/*.{jsx,tsx}'],
   extends: [eslintReact.configs['recommended-typescript']],
@@ -58,8 +58,7 @@ export const react = defineConfig({
 
 export const tanstack = defineConfig(pluginRouter.configs['flat/recommended']);
 
-// Each app passes its Tailwind entry CSS, resolved from the app cwd.
-export function tailwind(entryPoint) {
+export function tailwind(entryPoint: string) {
   return defineConfig({
     files: ['**/*.{jsx,tsx}'],
     plugins: { 'better-tailwindcss': betterTailwind },
@@ -72,8 +71,8 @@ export function tailwind(entryPoint) {
   });
 }
 
-// perfectionist owns sorting oxfmt/oxlint don't cover — imports stay with
-// oxfmt. jsx-props per telemachus-8zj.10; sort-objects scoped to
+// perfectionist owns sorting oxfmt/oxlint don't cover (imports stay with
+// oxfmt). jsx-props per telemachus-8zj.10; sort-objects scoped to
 // config/component/story files because object-key order is often semantic.
 export const sort = defineConfig([
   {
@@ -144,7 +143,6 @@ export const typeChecked = defineConfig({
 });
 
 // Enforces base-first / oxlint-last ordering so consumers can't wire it wrong.
-// oxlint-last disables ESLint rules that oxlint already covers.
-export function config(...layers) {
+export function config(...layers: Parameters<typeof defineConfig>) {
   return defineConfig(base, ...layers, oxlintDisable);
 }
