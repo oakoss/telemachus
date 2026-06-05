@@ -31,6 +31,8 @@ allowBuilds:
   lefthook: true
   lightningcss: true
 
+# Pin pnpm's default explicitly (minutes; 1440 = 1 day).
+minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - '@tanstack/react-start-rsc@0.1.19'
   - '@tanstack/react-start@1.168.20'

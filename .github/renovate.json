@@ -9,6 +9,7 @@
   "automerge": true,
   "branchPrefix": "chore/deps-",
   "platformAutomerge": true,
+  "minimumReleaseAge": "1 day",
   "rangeStrategy": "bump",
   "schedule": ["before 6am on the first day of the month"],
   "timezone": "America/Chicago",
