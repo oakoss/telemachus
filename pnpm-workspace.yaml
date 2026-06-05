@@ -18,6 +18,10 @@ catalog:
   eslint-plugin-oxlint: ^1.68.0
   '@vitest/eslint-plugin': ^1.6.19
   globals: ^17.6.0
+  '@eslint-react/eslint-plugin': ^5.8.10
+  '@tanstack/eslint-plugin-router': ^1.162.0
+  eslint-plugin-better-tailwindcss: ^4.5.0
+  eslint-plugin-perfectionist: ^5.9.0
   uuid: ^14.0.0
   vitest: ^4.1.8
   zod: ^4.4.3

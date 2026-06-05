@@ -1,5 +1,27 @@
-import { browser, config, test, typeChecked } from '@oakoss/eslint';
+import {
+  browser,
+  config,
+  react,
+  sort,
+  tailwind,
+  tanstack,
+  test,
+  typeChecked,
+} from '@oakoss/eslint';
+import { globalIgnores } from 'eslint/config';
 
-// oxlint covers react/jsx-a11y natively; the full React/TanStack ESLint layers
-// are deferred (telemachus-8zj.10).
-export default config(browser, typeChecked, test);
+export default config(
+  globalIgnores([
+    '**/.nitro/**',
+    '**/.tanstack/**',
+    '**/playwright-report/**',
+    '**/test-results/**',
+  ]),
+  browser,
+  react,
+  sort,
+  tanstack,
+  tailwind('./src/styles/globals.css'),
+  typeChecked,
+  test,
+);

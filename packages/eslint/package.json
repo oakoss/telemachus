@@ -14,10 +14,14 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@eslint-react/eslint-plugin": "catalog:",
     "@eslint/js": "catalog:",
+    "@tanstack/eslint-plugin-router": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
     "eslint": "catalog:",
+    "eslint-plugin-better-tailwindcss": "catalog:",
     "eslint-plugin-oxlint": "catalog:",
+    "eslint-plugin-perfectionist": "catalog:",
     "globals": "catalog:",
     "typescript-eslint": "catalog:"
   },
