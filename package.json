@@ -22,6 +22,7 @@
     "lint:oxlint:fix": "oxlint --fix",
     "sherif": "sherif",
     "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {

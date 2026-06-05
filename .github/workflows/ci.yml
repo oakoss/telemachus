@@ -79,10 +79,10 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Setup
         uses: ./.github/actions/setup
-      # Stub: Playwright + axe smoke lands at telemachus-8zj.2 (web app renders).
-      # Keeping the job shape now means branch protection never needs rewiring.
-      - name: playwright
-        run: echo "No e2e tests yet — lands at telemachus-8zj.2 (web app renders)."
+      - name: Install Playwright browsers
+        run: pnpm --filter @oakoss/web exec playwright install --with-deps chromium
+      - name: e2e
+        run: pnpm --filter @oakoss/web test:e2e
 
   summary:
     name: CI summary

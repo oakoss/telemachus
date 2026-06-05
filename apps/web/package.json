@@ -13,6 +13,7 @@
     "lint": "eslint . --max-warnings 0 --cache --cache-location node_modules/.cache/.eslintcache",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -27,8 +28,10 @@
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@oakoss/eslint": "workspace:*",
     "@oakoss/typescript": "workspace:*",
+    "@playwright/test": "^1.60.0",
     "@tanstack/devtools-vite": "^0.7.0",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
