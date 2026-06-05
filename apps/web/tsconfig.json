@@ -1,0 +1,9 @@
+{
+  "extends": "@oakoss/typescript/react.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noUncheckedSideEffectImports": true,
+    "types": ["vite/client"]
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
+}

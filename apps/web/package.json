@@ -1,0 +1,43 @@
+{
+  "name": "@oakoss/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "build": "vite build",
+    "clean": "rm -rf .output .tanstack .turbo node_modules",
+    "dev": "vite dev",
+    "lint": "eslint . --max-warnings 0 --cache --cache-location node_modules/.cache/.eslintcache",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/react-devtools": "^0.10.5",
+    "@tanstack/react-router": "^1.170.11",
+    "@tanstack/react-router-devtools": "^1.167.0",
+    "@tanstack/react-start": "^1.168.20",
+    "nitro": "npm:nitro-nightly@3.0.1-20260604-184855-0a07991c",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@oakoss/eslint": "workspace:*",
+    "@oakoss/typescript": "workspace:*",
+    "@tanstack/devtools-vite": "^0.7.0",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "catalog:",
+    "jsdom": "^29.1.1",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
