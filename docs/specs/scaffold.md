@@ -19,7 +19,7 @@ Bias: **thin.** Stand up the structure and the seams R1 will immediately touch; 
 - Toolchain wired into Turbo pipelines: **lean oxlint** (native-only, root nested config) **+ ESLint** (per-package presets) **+ oxfmt**, Vitest, Playwright, TypeScript (**strict**, with `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`), mise/Node pin, the existing lefthook hooks. Lint topology: [ADR-007](../decisions/007-repo-shape-and-toolchain.md).
 - `apps/web` — a TanStack Start app that boots, renders a placeholder, dev-serves, and builds via the Nitro **node** preset.
 - `packages/db` — **TanStack DB collections + first-party SQLite persistence** (`@tanstack/browser-db-sqlite-persistence`, wa-sqlite/OPFS); leader-elected multi-tab + OPFS are **built in** (no DIY worker binding). A trivial persisted collection + query proves the path (no real tables yet). **Drizzle = server-side** (Postgres) only; server tests run against real Postgres via Testcontainers (not PGlite). (Per [ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md)'s amendment: on-device = SQLite, not PGlite.)
-- `packages/shared` — the foundations utilities R1 needs: UUIDv7 ids, Zod-validated env, a Pino logger behind an interface (+ a correlation-id field), and a typed result/error shape.
+- `packages/shared` — the foundations utilities R1 needs: UUIDv7 ids, Zod-validated env, a logger behind an interface (console default at `.4`, Pino server-side later; + a correlation-id field), and a typed result/error shape.
 - `packages/core` — a Hono app skeleton mounted **in-process** behind the Start BFF (a `/health` + `/version` route); not a separate service.
 - A strict **CSP** on the app from the first commit — `wasm-unsafe-eval` + `worker-src`/`child-src blob:` and the wa-sqlite WASM asset origin; pairs with the reproducible-WASM-bootstrap + SRI seam ([`foundations.md`](foundations.md)).
 - **Dev environment + services** — a `docker-compose.yml` for **dev backing services** (Postgres now; Electric/MinIO at later rungs), a production **`Dockerfile`** (Nitro build → Coolify), `.env.example`, and a dev-setup doc. The **app runs on the host for dev** (`pnpm dev`); Docker is for **dev services + test databases (Testcontainers) + the deploy image**, not the dev app.
@@ -43,7 +43,7 @@ Modular monorepo (ADR-008), Node runtime (ADR-008), server-side Drizzle (Postgre
 | `packages/db`         | TanStack DB collections + SQLite persistence (wa-sqlite/OPFS); server Drizzle schema (Postgres) + migration runner | client = SQLite, server = Postgres ([ADR-001](../decisions/001-data-layer-tanstack-db-electric-pglite.md) amendment) |
 | `packages/shared`     | Zod schemas/types, env, logger, ids, result/error                                                                  | the foundations utils; explicit subpath exports, no barrels                                                          |
 | `packages/typescript` | shared tsconfig bases (base/react/node)                                                                            | `extends`-only; ~no deps                                                                                             |
-| `packages/eslint`     | ESLint flat-config presets (base/react/node/test/e2e) + plugin deps                                                | imported per-package; **oxlint/oxfmt configs live at the repo root** (oxlint via nested per-package configs)         |
+| `packages/eslint`     | ESLint flat-config presets (node/browser/test/typeChecked + `config()`) + plugin deps                              | imported per-package; **oxlint/oxfmt configs live at the repo root** (oxlint via nested per-package configs)         |
 
 Control flow at R1: browser → `apps/web` (Start server fns = BFF) → `packages/core` (in-process) → DB. The web app reads its local **TanStack DB collections** (SQLite-persisted) reactively; the core owns domain/agent logic. The split is a **seam**, collapsed in-process now.
 
@@ -73,7 +73,7 @@ Vertical-ish setup increments; first one is the thinnest "it boots."
 1. **Monorepo boots** — Turbo + pnpm workspace + tsconfig base + lint/format/typecheck/test pipelines green on empty packages.
 2. **Web app renders** — `apps/web` (TanStack Start) boots, renders a placeholder, builds via Nitro node preset; CSP in place.
 3. **Local DB path** — `packages/db`: TanStack DB + first-party SQLite persistence (wa-sqlite/OPFS); a persisted collection + live query runs from the app and survives reload. (Server Drizzle/Postgres schema is separate.)
-4. **Foundations utils** — `packages/shared`: UUIDv7, Zod env, Pino logger (+ correlation id, redaction), result/error.
+4. **Foundations utils** — `packages/shared`: UUIDv7, Zod env, logger interface + console default (+ correlation id, redaction; Pino later), result/error.
 5. **Core skeleton** — `packages/core`: in-process Hono app with `/health` + `/version`, mounted behind the Start BFF.
 6. **Dev environment & services** — `docker-compose.yml` (Postgres for dev), production `Dockerfile` (Coolify), `.env.example`, dev-setup doc. The app stays on the host for dev.
 
