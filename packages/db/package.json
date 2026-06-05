@@ -7,7 +7,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "lint": "eslint .",
+    "clean": "rm -rf .turbo coverage node_modules",
+    "lint": "eslint . --max-warnings 0 --cache --cache-location node_modules/.cache/.eslintcache",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

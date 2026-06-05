@@ -32,7 +32,7 @@ jobs:
       - name: oxfmt
         run: pnpm format:check
       - name: oxlint
-        run: pnpm lint
+        run: pnpm lint:oxlint
       - name: eslint
         run: pnpm lint:eslint
       - name: markdownlint

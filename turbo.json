@@ -11,9 +11,10 @@
         ".tanstack/**"
       ]
     },
-    "typecheck": {},
+    "clean": { "cache": false },
+    "dev": { "cache": false, "persistent": true },
     "lint": {},
     "test": { "outputs": ["coverage/**"] },
-    "dev": { "cache": false, "persistent": true }
+    "typecheck": {}
   }
 }

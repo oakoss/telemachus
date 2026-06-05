@@ -75,7 +75,7 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 
 ## Project
 
-Telemachus — a personal-first, local-first chat + agent hub; a spiritual successor to Odysseus. Research/ideas phase; no application code yet.
+Telemachus — a personal-first, local-first chat + agent hub; a spiritual successor to Odysseus. Early build: monorepo scaffold + foundations (E0).
 
 **Firm constraints (guardrails — these shape every choice):** free / OSS only, self-hosted (Proxmox / Coolify) — no paid or hobby-tier SaaS; **build-our-own**, all-TypeScript — surveyed projects are references to reimplement, never dependencies; **personal-first**.
 
@@ -91,6 +91,16 @@ Keep docs aligned — **one source of truth per concern; everywhere else links, 
 - **bd memories** may summarize for fast recall, but must point to the canonical doc — not a second authority.
 - Before adding a new doc, check the map: if the concern already has a home, extend it rather than starting a parallel one.
 
+## Comments
+
+Comments earn their place by explaining **WHY or non-obvious context, never WHAT**. If the code explains itself, it needs **no comment — not even a one-liner**.
+
+- A good comment is **accurate** (matches the code; delete it when it goes stale), **earns its place** (captures intent, a gotcha, or an invariant the code can't show), and is **concise**.
+- Don't restate the code, add section markers (`// ===== helpers =====`), or narrate (`// Here we…`, `// Let's…`, `// This…`).
+- No hedging or filler (`obviously`, `basically`, `just`), and no `Note:` / `Important:` prefixes when the surrounding text already conveys the weight.
+- TODOs need a bead reference; cross-references that belong in the commit/PR (`added for X`, `used by Y`) stay out of the code.
+- When in doubt, delete it — if it's worth keeping, make it tighter.
+
 ## Build & Test
 
-_No build yet. Add commands here once application code exists._
+Turborepo + pnpm monorepo. The full gate (runs on pre-commit) is `pnpm lint` (oxlint + ESLint + markdownlint) + `pnpm typecheck`; rounded out by `pnpm test` (Vitest), `pnpm build`, `pnpm format` / `format:check` (oxfmt), and `pnpm knip` / `pnpm sherif` (monorepo hygiene). The full script list lives in the root `package.json`; toolchain rationale in [ADR-007](docs/decisions/007-repo-shape-and-toolchain.md).

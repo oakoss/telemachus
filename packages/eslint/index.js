@@ -19,8 +19,8 @@ const base = defineConfig(
 );
 
 // Read from the real root .oxlintrc.json so the dedupe tracks exactly what we
-// enable. typeAware:true also drops the type-aware rules oxlint runs on
-// pre-push/CI, leaving ESLint only the rules oxlint doesn't cover.
+// enable. typeAware:true also drops the type-aware rules oxlint runs, leaving
+// ESLint only the rules oxlint doesn't cover.
 const oxlintDisable = oxlint.buildFromOxlintConfigFile(
   path.join(import.meta.dirname, '../../.oxlintrc.json'),
   { typeAware: true },
@@ -28,6 +28,10 @@ const oxlintDisable = oxlint.buildFromOxlintConfigFile(
 
 export const node = defineConfig({
   languageOptions: { globals: globals.node },
+});
+
+export const browser = defineConfig({
+  languageOptions: { globals: globals.browser },
 });
 
 export const test = defineConfig({

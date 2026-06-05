@@ -7,11 +7,14 @@ output:
 pre-commit:
   parallel: true
   jobs:
-    # Fast: oxlint without --type-aware on staged files only. The full type-aware
-    # pass (`pnpm lint`) runs on pre-push/CI — too slow per commit. ADR-007.
-    - name: oxlint
-      glob: '*.{js,jsx,ts,tsx,mjs,cjs}'
-      run: pnpm exec oxlint {staged_files}
+    # Full gate runs here (not pre-push) so every commit lands green — no fix-up
+    # commits. lint/typecheck can't be staged-scoped (typecheck is whole-program),
+    # so they check the working tree; Turbo caches unchanged packages. ADR-007.
+    - name: lint
+      run: pnpm lint
+
+    - name: typecheck
+      run: pnpm exec turbo run typecheck
 
     # Sequential (piped) to avoid racing .md writes; oxfmt last so output matches CI's oxfmt --check.
     - name: format
@@ -33,17 +36,8 @@ commit-msg:
     - name: commitlint
       run: pnpm exec commitlint --edit {1}
 
-# Full lint runs here (not pre-commit) — too slow per commit; Turbo caches
-# unchanged packages. ADR-007.
 pre-push:
   jobs:
-    - name: oxlint
-      run: pnpm lint
-    - name: eslint
-      run: pnpm exec turbo run lint
-    - name: typecheck
-      run: pnpm exec turbo run typecheck
-
     # bd issue-graph sync over the git remote (refs/dolt/data).
     # Inert until a remote exists.
     - name: bd-sync
