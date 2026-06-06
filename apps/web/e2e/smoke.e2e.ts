@@ -14,9 +14,27 @@ test('placeholder renders without console errors', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-  // Poll so errors firing after load (hydration, async) still fail the test
-  // instead of racing the assertion.
+  // Poll so post-load errors (hydration, async) don't race the assertion.
   await expect.poll(() => errors).toEqual([]);
+});
+
+test('serves an enforcing strict CSP whose nonce matches the document', async ({
+  page,
+}) => {
+  const response = await page.goto('/');
+  const csp = response?.headers()['content-security-policy'];
+  expect(csp, 'enforcing CSP header present').toBeTruthy();
+  expect(csp).toMatch(/script-src[^;]*'strict-dynamic'/);
+  expect(csp).toContain("object-src 'none'");
+
+  // Header nonce must match the meta tag — the start.ts→router.tsx handoff most
+  // likely to silently break on a framework upgrade.
+  const headerNonce = csp?.match(/'nonce-([\w-]+)'/)?.[1];
+  expect(headerNonce).toBeTruthy();
+  const metaNonce = await page
+    .locator('meta[property="csp-nonce"]')
+    .getAttribute('content');
+  expect(metaNonce).toBe(headerNonce);
 });
 
 test('placeholder has no axe a11y violations', async ({ page }) => {
