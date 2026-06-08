@@ -36,4 +36,4 @@ minimumReleaseAge: 1440
 # nitro-nightly is required by TanStack Start's Vite plugin; exempt it from the
 # 1-day cooldown (it is a nightly). Drop when Start ships a stable nitro.
 minimumReleaseAgeExclude:
-  - nitro-nightly@3.0.1-20260604-184855-0a07991c
+  - nitro-nightly@3.0.1-20260605-145636-4ab22a9d

@@ -15,6 +15,11 @@
   "timezone": "America/Chicago",
   "labels": ["dependencies"],
   "packageRules": [
+    {
+      "description": "Pin nitro-nightly deliberately (TanStack Start's Vite plugin needs it); bump it manually, not via Renovate.",
+      "matchDepNames": ["nitro"],
+      "enabled": false
+    },
     { "matchUpdateTypes": ["major"], "automerge": false },
     {
       "matchPackageNames": [
