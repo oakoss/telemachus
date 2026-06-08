@@ -1,0 +1,38 @@
+# Dev backing services. The app itself runs on the host (`pnpm dev`) — Docker
+# is only for backing services here, the deploy image (8zj.6.2), and test
+# databases (Testcontainers). Unit/CI tests use in-memory PGlite, so they need
+# no Docker. Scope is intentionally limited to Postgres for server Drizzle +
+# Better Auth; Electric and MinIO arrive at later rungs.
+name: telemachus
+
+services:
+  postgres:
+    # Pinned to 17 (current stable) rather than 18 because the Electric spike
+    # this unblocks (8zj.8) needs a major Electric is known to support; revisit
+    # the bump once that spike confirms compatibility. pgvector (server semantic
+    # recall, a later rung) swaps to the pgvector/pgvector image when needed.
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-telemachus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-telemachus}
+      POSTGRES_DB: ${POSTGRES_DB:-telemachus}
+    ports:
+      # Loopback-only: host-run app/tools (`pnpm dev`, drizzle-kit) reach it, but
+      # the dev DB (default creds) is never exposed to the LAN.
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-telemachus} -d ${POSTGRES_DB:-telemachus}',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pgdata:
