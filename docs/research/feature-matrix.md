@@ -3,7 +3,7 @@
 - **Date:** 2026-06-01 (snapshot; projects move fast — re-verify before committing roadmap)
 - **Scope:** High-level capability comparison across the 10 code-level [deep dives](deep-dives/). The deep dives hold the finer detail; this is the at-a-glance "who has what + where the whitespace is." Companion to [`landscape.md`](landscape.md), [`differentiation-opportunities.md`](differentiation-opportunities.md), [`community-requests.md`](community-requests.md), and [`missing-features.md`](missing-features.md).
 - **Method & confidence:** From the 2026-06-01 code-level deep dives (shallow-clone sweeps). Cells are _code-present_, not maturity-verified; `?` = unverified. Star counts are `gh`-reported, approximate. Pierre (diffs/trees) is a UI-component reference, intentionally **not** a column (see [`deep-dives/pierre.md`](deep-dives/pierre.md)).
-- **Partial re-verify:** the **Odysseus** column was re-checked against the commit log on 2026-06-07 (see [`deep-dives/odysseus.md`](deep-dives/odysseus.md) → _Recent trajectory_); other columns remain the 2026-06-01 snapshot.
+- **Re-verified 2026-06-07:** all 10 columns re-checked against current upstream (each deep dive carries a dated note). Net result — 3 cell flips across 2 projects: LibreChat _Folders/projects/tags_ —→◑ (Private Chat Projects), Lobe _Scheduling/cron_ ◑→✅ and _Async steer/queue+notify_ ◑→✅ (Agent Task System). **Every ◆ whitespace wedge still holds** — no surveyed project shipped a per-conversation work surface, glass-box rewind+fork, durable project working-state memory, a reactive synced data model, or local-first CRDT sync.
 
 **Legend:** ✅ yes · ◑ partial/adjacent · — no · ? unverified
 **Columns:** Ody=Odysseus · OWUI=Open WebUI · LibC=LibreChat · Lobe=Lobe Chat · Herm=Hermes · Claw=OpenClaw · Letta=Letta · OCode=OpenCode · t3=t3code · pi=pi
@@ -34,7 +34,7 @@
 | Subagents / multi-agent        | ?   | —    | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | —   | ◑   |
 | Plan / read-only mode          | ✅  | —    | —    | —    | —    | —    | —     | ✅    | ✅  | ◑   |
 | Tool approval (allow/ask/deny) | ◑   | —    | ◑    | —    | ✅   | ✅   | ✅    | ✅    | ✅  | ◑   |
-| Scheduling / cron              | ✅  | ✅   | —    | ◑    | ✅   | ✅   | —     | —     | —   | —   |
+| Scheduling / cron              | ✅  | ✅   | —    | ✅   | ✅   | ✅   | —     | —     | —   | —   |
 
 ### Models, tools, extensibility
 
@@ -75,9 +75,9 @@
 
 | Capability                   | Ody | OWUI | LibC | Lobe | Herm | Claw | Letta | OCode | t3  | pi  |
 | ---------------------------- | --- | ---- | ---- | ---- | ---- | ---- | ----- | ----- | --- | --- |
-| Folders / projects / tags    | ✅  | ✅   | —    | ✅   | ?    | ?    | —     | —     | —   | —   |
+| Folders / projects / tags    | ✅  | ✅   | ◑    | ✅   | ?    | ?    | —     | —     | —   | —   |
 | Cost / usage visibility      | ✅  | ✅   | ◑    | ✅   | ✅   | ?    | ✅    | ✅    | ◑   | ✅  |
-| Async steer / queue + notify | ?   | —    | —    | ◑    | —    | ◑    | —     | —     | ◑   | ✅  |
+| Async steer / queue + notify | ?   | —    | —    | ✅   | —    | ◑    | —     | —     | ◑   | ✅  |
 
 ### Sync, multi-user, glass-box
 
@@ -115,7 +115,9 @@
 
 ## Whitespace — confirmed net-new across all 10 (◆)
 
-1. **Work surface** — in-conversation pinned-message→checklist + per-conversation notes. _(Provenance: LibreChat #6743 unmerged, OpenAI Dev Community ×2, shadcn X.)_ OWUI/Lobe notes are global/non-thread; nobody ships the per-conversation surface.
+_Re-confirmed 2026-06-07: a full re-check of all 10 found none of these shipped — all five remain net-new. Closest adjacencies seen: OpenCode's V2 compaction "checkpoint" and OpenClaw's "dreaming" memory (both general/auto-summary, not the project-working-state variant)._
+
+1. **Work surface** — in-conversation pinned-message→checklist + per-conversation notes. _(Provenance: OpenAI Dev Community ×2, shadcn X; the earlier LibreChat #6743 citation no longer resolves upstream as of 2026-06-07.)_ OWUI/Lobe notes are global/non-thread; nobody ships the per-conversation surface.
 2. **Glass-box rewind-to-step + fork a run** — conversation-_fork_ exists (LibreChat/Letta/OCode); true step-rewind absent everywhere.
 3. **Durable distilled _working_ memory** — Letta's blocks + sleeptime is closest, but it's agent-persona memory; project working-state resume ("decided/tried/next") is open.
 4. **Agent-native reactive data model + synced frontend** — nobody exposes runs/steps/conversation as the live, queryable, synced product model.

@@ -4,6 +4,8 @@
 - **Repo:** [anomalyco/opencode](https://github.com/anomalyco/opencode) — **TypeScript/Bun**, ~168k★ (approx., gh, 2026-06-01; v1.15.x)
 - **Role:** Landscape + import source + **TS design/architecture references**. Odysseus is **built on** OpenCode (confirmed by the Odysseus author, 2026-06-07; see [`odysseus.md`](odysseus.md)) — its underlying coding-agent engine. Coding depth is its focus.
 
+**Re-verified 2026-06-07:** ~171.3k★ (from ~168k), v1.16.2, 200+ commits. Dominant theme is a **V2 core re-platforming** (unified tool runtime; V2 sessions with interrupt/model-switch/auto-compaction/overflow-recovery/permission), plus managed workspace cloning + move-session-between-workspaces, `run --replay` (read-only playback), and an http-recorder test library. No ◆ movement: the V2 compaction _checkpoint_ (Goal/Progress/Done/Decisions/Next) is auto-generated context compression — not durable working memory or a user surface; `/undo` stays linear git-backed message-undo. No matrix flips. (Most relevant to track as the engine under the Odysseus parity baseline.)
+
 ## Architecture
 
 Bun monorepo, **Effect** runtime throughout (typed errors, resource cleanup, concurrency). Drizzle + SQLite (versioned migrations). Hono HTTP API + WebSocket. TUI = OpenTUI (Solid.js). Provider layer on Vercel AI SDK. Console/cloud packages (SST + Stripe).

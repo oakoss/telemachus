@@ -4,6 +4,8 @@
 - **Repo:** [open-webui/open-webui](https://github.com/open-webui/open-webui) — Python, ~139.6k★ (approx., gh, 2026-06-01)
 - **Role:** The **category leader** telemachus most resembles (conversation-primary self-host chat workspace) — primary parity/import reference. Python → features to reimplement in TS, not a dependency.
 
+**Re-verified 2026-06-07:** ~140.5k★ (+~900), 86 commits, one release (v0.9.6) — incremental breadth (knowledge-base directory-sync + nested folders, a model-facing filesystem tool, per-chat skills toggle, chat subfolders, Valkey VDB, Linkup search). No matrix-cell flips; none of the 5 ◆ wedges moved.
+
 ## Architecture
 
 FastAPI + SQLAlchemy backend, **SvelteKit** frontend, Socket.io (real-time), Redis (sessions). SQLite/Postgres + **9 vector DB backends** (Chroma/PGVector/Qdrant/Milvus/ES/OpenSearch/Pinecone/S3Vector/Oracle). AGPLv3.

@@ -8,7 +8,7 @@
 
 ## 1. Validates a net-new wedge item (demand provenance)
 
-- **Work surface — pinned messages + per-conversation notes.** _Provenance:_ LibreChat **#6743** "Pins, Notes, Variables" (unmerged); OpenAI Dev Community ["Pinned Messages"](https://community.openai.com/t/feature-request-pinned-messages/1122291) and ["Pinned Messages or Notes in ChatGPT Conversations"](https://community.openai.com/t/pinned-messages-or-notes-in-chatgpt-conversations/1146841); shadcn's X request. Recurs across ≥3 communities. OpenAI/Open WebUI ship pinned _chats_ (conversation-level) and _global_ notes — the requested **in-conversation pins-as-checklist + notes beside the thread** is still open everywhere. → Confirms the wedge is wanted.
+- **Work surface — pinned messages + per-conversation notes.** _Provenance:_ OpenAI Dev Community ["Pinned Messages"](https://community.openai.com/t/feature-request-pinned-messages/1122291) and ["Pinned Messages or Notes in ChatGPT Conversations"](https://community.openai.com/t/pinned-messages-or-notes-in-chatgpt-conversations/1146841); shadcn's X request; the earlier LibreChat **#6743** "Pins, Notes, Variables" citation no longer resolves upstream as of 2026-06-07. Recurs across ≥2 communities. OpenAI/Open WebUI ship pinned _chats_ (conversation-level) and _global_ notes — the requested **in-conversation pins-as-checklist + notes beside the thread** is still open everywhere. → Confirms the wedge is wanted.
 - **Durable working memory** and **glass-box rewind+fork** did **not** surface as loud community requests — these are _quiet/emerging_ demand (the bet), not mass-validated asks. Honest signal: telemachus is _ahead_ of explicit demand here, not chasing it.
 
 ## 2. High-demand parity/import (table-stakes that are genuinely wanted)

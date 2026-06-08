@@ -4,6 +4,8 @@
 - **Repo:** [letta-ai/letta](https://github.com/letta-ai/letta) — Python, ~23k★ (approx., gh, 2026-06-01)
 - **Role:** The key reference for the telemachus **durable-memory** and **glass-box** wedges. Features/architecture to reimplement in TS, not a dependency.
 
+**Re-verified 2026-06-07:** no change — `letta-ai/letta` has been dormant since 2026-05-14 (0 commits in the window), ~23.2k★, latest release still v0.16.8 (fixes only). All 5 ◆ hold (rewind+fork still partial: conversation-fork yes, true step-rewind no; durable memory still persona-scoped, ◑). **Watch:** the _separate_ `letta-ai/letta-code` repo (active as of the 2026-06-07 re-check) edges toward durable project memory via git-backed MemFS + sleeptime reflection, but ships no scratchpad/checklist/rewind/step-fork and is out of this column's scope.
+
 ## Architecture
 
 Stateful agent framework (formerly MemGPT). FastAPI + SQLAlchemy async ORM + **pgvector** (or Turbopuffer). Agent loop V3 (default). Python/TS SDKs, REST API, partial OpenAI-compat. "Groups" for multi-agent (incl. sleeptime).

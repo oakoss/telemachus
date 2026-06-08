@@ -4,6 +4,8 @@
 - **Repo:** [lobehub/lobe-chat](https://github.com/lobehub/lobe-chat) — **TypeScript** (Next.js), ~78k★ (approx., gh, 2026-06-01)
 - **Role:** Import source + **TS design references** (study + reimplement, never a dependency). Standout: the most developed **editable/white-box memory** in the survey.
 
+**Re-verified 2026-06-07:** ~78.3k★, 100+ commits, v2.2.2. **Rebranded "Lobe Chat" → "LobeHub — Chief Agent Operator"**, pivoting to agent-ops: Execution Devices (run agents/Claude Code on any local/remote machine), workspace multi-tenancy, **Agent Task System GA** (scheduled runs, dependency batches), self-iteration agents with an async memory writer, Connectors, callSubAgent suspend/resume. Matrix flips: _Scheduling/cron_ ◑→✅, _Async steer/queue+notify_ ◑→✅ (_Model routing_ borderline, kept ◑). No ◆ breach — suspend/resume is forward parked-resume (not rewind+fork); the async memory writer is persona/user-modeling, not project working-state.
+
 ## Architecture
 
 Next.js app; **Drizzle ORM** with **hybrid search (BM25/ParadeDB + vector cosine)**, PGlite fallback for local. **Zustand** modular slice stores (class-based action slices, shallow-equality subscriptions). tRPC service layer (lambdaClient). Electron desktop + PWA. better-auth.

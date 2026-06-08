@@ -2,7 +2,9 @@
 
 - **Status:** Code-level review, 2026-06-01 (code-present, not maturity-verified)
 - **Repo:** [danny-avila/LibreChat](https://github.com/danny-avila/LibreChat) — **TypeScript**, ~37.9k★ (approx., gh, 2026-06-01)
-- **Role:** Import source + **TS design references** (study + reimplement, never a dependency). Also the origin of the **#6743 "Pins, Notes, Variables"** request behind the work-surface wedge.
+- **Role:** Import source + **TS design references** (study + reimplement, never a dependency). Historically the origin of the **#6743 "Pins, Notes, Variables"** request behind the work-surface wedge (that issue no longer resolves upstream — see _Re-verified_ below).
+
+**Re-verified 2026-06-07:** ~38.6k★, active (84 commits; v0.8.6 is the baseline release, none newer). New: **Private Chat Projects** (PR #13467) — a per-user projects/folders organizing layer → flips _Folders/projects/tags_ —→◑. No ◆ movement (Projects is global org, not a per-conversation work surface). **Provenance correction:** the **#6743** "Pins/Notes/Variables" issue cited above no longer resolves upstream (closed/renumbered); the work-surface demand now rests on the OpenAI Dev Community + shadcn sources.
 
 ## Architecture
 
@@ -27,12 +29,12 @@
 
 ## Telemachus wedge checklist (probed)
 
-- **(a) pinned message → checklist:** ❌ — **#6743 not merged** (no pin routes found)
-- **(b) per-conversation notes scratchpad:** ❌ — **#6743 not merged** (memory is global KV, not per-convo notes)
+- **(a) pinned message → checklist:** ❌ — no pin routes found (the **#6743** request no longer resolves upstream, re-checked 2026-06-07)
+- **(b) per-conversation notes scratchpad:** ❌ — memory is global KV, not per-convo notes (#6743 no longer resolves upstream)
 - **(c) durable distilled working memory:** ◑ — global KV memory exists, but **not auto-distilled** from conversation history
 - **(d) run replay + fork:** ✅ — conversation fork **and** SSE resume both shipped (independently, not as one integrated "replay+fork")
 
-**Confirms the wedge:** LibreChat is _where the Pins/Notes request originated_ (#6743) and it's **still unshipped** — direct provenance that the work surface is wanted and open.
+**Confirms the wedge:** LibreChat still ships **no** per-conversation work surface (the Pins/Notes request, #6743, no longer resolves upstream as of 2026-06-07). The demand provenance now rests on the OpenAI Dev Community + shadcn sources; the absence here remains evidence the surface is wanted and open.
 
 ## Reference patterns to study + reimplement (NOT dependencies)
 

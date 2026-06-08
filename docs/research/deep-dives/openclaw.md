@@ -4,6 +4,8 @@
 - **Repo:** [openclaw/openclaw](https://github.com/openclaw/openclaw) — **TypeScript** (Node + pnpm workspace), ~376k★ (approx., gh, 2026-06-01)
 - **Role:** Landscape + import source + **TS design/architecture references** (it's TS, so the patterns are directly studyable — but reimplemented, never imported). Closest to a full "everything" personal-assistant workspace.
 
+**Re-verified 2026-06-07:** ~377k★, very active (2,286 commits; stable v2026.6.1). New: Skill Workshop governance (propose→approve→rollback), Workboard orchestration primitives (still a Gateway-_global_ Kanban), a memory-core **"dreaming"** consolidation subsystem (persona/general → `MEMORY.md`) + memory-wiki ChatGPT-import with rollback. As the closest sibling, checked strictly: **all 5 ◆ still open** — Canvas is agent A2UI (not a user checklist/notes surface); `session-fork` is subagent context inheritance (not run rewind+fork); "dreaming" is general memory, not project working-state (stays ◑); Gateway is still WS-RPC over SQLite (no reactive synced model); zero CRDT. No matrix flips.
+
 ## Architecture
 
 Thin core + thick plugins (136 bundled/external extensions). **Live Gateway** = control plane (WebSocket RPC, additive versioning); local-first agent loop = the product. SQLite-first state (Kysely). Native companions: macOS (Swift 6.2 menubar), iOS (Swift), Android (Kotlin). TUI via `@earendil-works/pi-tui`.

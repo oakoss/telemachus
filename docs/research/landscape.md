@@ -32,7 +32,7 @@
 
 ### OpenCode
 
-[`anomalyco/opencode`](https://github.com/anomalyco/opencode) — an open-source AI coding agent. TypeScript (~66%), Turborepo monorepo, Node/Bun. ~168k stars.
+[`anomalyco/opencode`](https://github.com/anomalyco/opencode) — an open-source AI coding agent. TypeScript (~66%), Turborepo monorepo, Node/Bun. ~171k stars (gh, 2026-06-07).
 
 - **Distinctive:** a dual-agent model — a full-access **Build** agent and a read-only **Plan** agent that asks permission before running commands, toggled with Tab.
 - **Ideas worth taking:** the Plan/Build approval split (a proven safety UX); a dedicated subagent for complex searches; the Turborepo + Bun monorepo structure; desktop-app distribution.

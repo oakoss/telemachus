@@ -4,6 +4,8 @@
 - **Repo:** [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) — Python, ~176k★ (approx., gh, 2026-06-01)
 - **Role:** Landscape + import source. Standouts: **messaging-channel breadth, sandbox backends, self-improving skills + skills.sh, model routing/fallback, trajectory replay.**
 
+**Re-verified 2026-06-07:** ~186k★ (from ~176k), very active — v0.16.0 "Surface Release": a native Electron desktop app, remote-gateway/multi-profile clients (WebSocket + OAuth), a browser admin panel, `/undo [N]`, fuzzy model picker. No matrix flips; none of the 5 ◆ moved (`/undo` is linear turn-truncation, not rewind-to-step+fork; memory stays skill/persona; SQLite/FTS5 server-state over WS — no reactive synced model, no CRDT).
+
 ## Architecture
 
 Python agent framework. CLI REPL (`prompt_toolkit`), Electron desktop (`apps/desktop`), React/Vite web (`web/`), Ink TUI (`ui-tui/`). SQLite (FTS5) state. Plugin architecture (`plugins/` with `plugin.yaml`). Nous Portal for managed models/tools.

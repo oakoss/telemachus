@@ -4,6 +4,8 @@
 - **Repo:** [earendil-works/pi](https://github.com/earendil-works/pi) — **TypeScript** (Biome, tsgo), ~58.7k★ (approx., gh, 2026-06-01; v0.78.0)
 - **Role:** Import source + **the strongest "reusable library" reference** — pi ships **4 independently npm-published packages** (study and reimplement, not consume). Web UI + Slack bot live in a separate repo, `earendil-works/pi-chat`.
 
+**Re-verified 2026-06-07:** ~60.7k★ (+~2k), v0.78.1, 59 commits — maintenance-class: provider coverage (ZAI CN, Ant Ling, NVIDIA NIM, MiniMax-M3), OpenRouter/Bedrock/OpenAI-Responses compat hardening, project trust gating, a cache-hit-rate footer. No ◆ movement; no matrix flips (trust gating reinforces but doesn't lift the ◑ on tool-approval/sandboxing).
+
 ## Architecture
 
 Monorepo of focused, published packages. **Biome** (not oxlint) for lint/format; **tsgo** compiler; TypeBox schemas; ES2022/Node16; `erasableSyntaxOnly` + `rewriteRelativeImportExtensions`. Supply-chain hardening (exact pins, npm shrinkwrap, min-release-age). Tool-calling **native (no MCP)**.

@@ -17,7 +17,7 @@ None of the projects surveyed ([`../research/feature-matrix.md`](../research/fea
 - **Notes** — **Open WebUI Notes** and **Witsy Scratchpad** are the closest existing: standalone note panels, not a per-session scratchpad beside the thread. Agent markdown-memory files (Hermes/OpenClaw) are the agent's store, not a user scratchpad. Odysseus's Notes/Tasks is a separate documents surface.
 - **Pinned messages** — tools pin _conversations_, not _messages-as-checklist_. OpenCode's `todowrite` is agent-authored todos with no jump-nav.
 
-Demand is corroborated by independent requests: LibreChat discussion #6743 ("Add Pins, Notes, and Variables") and a Cursor-forum "Note/Scratchpad per-Chat" thread ask for the same combination — see [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md).
+Demand is corroborated by independent requests: an OpenAI Dev Community "Pinned Messages / Notes" thread, shadcn's X request, and a Cursor-forum "Note/Scratchpad per-Chat" thread ask for the same combination — see [`../research/differentiation-opportunities.md`](../research/differentiation-opportunities.md). (The earlier LibreChat #6743 "Pins, Notes, Variables" citation no longer resolves upstream as of 2026-06-07.)
 
 ## Why it fits Telemachus
 

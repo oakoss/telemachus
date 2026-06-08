@@ -2,11 +2,13 @@
 
 - **Status:** Code-level review, 2026-06-01
 - **Repo:** [pingdotgg/t3code](https://github.com/pingdotgg/t3code) — **TypeScript monorepo**, ~12k★ (Theo / ping.gg)
-- **Role:** Import source + **architecture/tooling reference** — its turbo + Bun + mise + oxlint + oxfmt + AGENTS.md monorepo closely mirrors telemachus's _recommended (not committed)_ TS direction and shares tooling telemachus also uses (oxlint/oxfmt, AGENTS.md). Telemachus currently uses **pnpm**, not Bun, and hasn't added turbo yet. The structural template is the bigger win.
+- **Role:** Import source + **architecture/tooling reference** — its **Vite+ ("vp") + pnpm + mise + oxlint + oxfmt + AGENTS.md** monorepo closely mirrors telemachus's _recommended (not committed)_ TS direction and shares tooling telemachus also uses (pnpm, oxlint/oxfmt, AGENTS.md). The structural template is the bigger win. _(Migrated off Bun/Turbo in 2026-06 — see Re-verified.)_
+
+**Re-verified 2026-06-07:** ~12.5k★, active (59 commits; v0.0.25). Two shifts: (1) **toolchain migrated Bun/Turbo → Vite+ ("vp") + pnpm** (#2899; Effect typecheck via patched `tsgo`) — the Role/Architecture summaries above now reflect this (it moves t3code _closer_ to telemachus's pnpm direction); the detailed _Architecture & tooling template_ section below is the pre-migration 2026-06-01 snapshot, pending a deeper re-dive; (2) **T3 Cloud relay** (#2837) — a central Cloudflare-Worker relay (DPoP tokens, Clerk OAuth, WS tickets, APNs push/Live Activity), server-mediated, **not** CRDT/local-first. No ◆ movement; no matrix flips.
 
 ## Architecture
 
-Minimal web GUI brokering **multiple agent providers** (Codex, Claude Agent SDK, OpenCode, Cursor). **Effect**-based, server-authoritative **event-sourced** orchestration. Bun monorepo. Provider-neutral contracts. Native apps via Electron + Expo RN.
+Minimal web GUI brokering **multiple agent providers** (Codex, Claude Agent SDK, OpenCode, Cursor). **Effect**-based, server-authoritative **event-sourced** orchestration. pnpm monorepo (Vite+ build). Provider-neutral contracts. Native apps via Electron + Expo RN.
 
 ## Feature inventory
 
@@ -22,6 +24,8 @@ Minimal web GUI brokering **multiple agent providers** (Codex, Claude Agent SDK,
 - **Misc:** OTLP traces/metrics + Pino logging; hermetic provider-neutral determinism; event-sourced server-authoritative state
 
 ## Architecture & tooling template (the priority for telemachus)
+
+_Captured 2026-06-01, pre-migration: t3code has since moved Bun/Turbo → Vite+ ("vp") + pnpm (#2899), so the `turbo.json` / Bun-catalog / mise-pins-bun specifics below describe the **old** layout — the post-migration tooling structure needs a deeper re-dive (not done this pass)._
 
 - **Monorepo:** `apps/` (server = provider dispatch + orchestration; web = React 19 + Vite + Tailwind 4 + TanStack Router; desktop = Electron; mobile = Expo; marketing = Astro) + `packages/` (`contracts` = schema-only Effect/Zod, **explicit subpath exports, no barrel**; `shared` = runtime utils; `client-runtime`; effect wrappers for ACP/Codex; `ssh`; `tailscale`)
 - **turbo.json:** `build` (`^build`, outputs dist/dist-electron), `dev` (no cache, persistent, depends on contracts#build), `typecheck`/`test` (after `^build`); 60+ centralized `globalEnv`
