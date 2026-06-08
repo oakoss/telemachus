@@ -2,7 +2,7 @@
 
 - **Status:** Code-level review, 2026-06-01
 - **Repo:** [anomalyco/opencode](https://github.com/anomalyco/opencode) — **TypeScript/Bun**, ~168k★ (approx., gh, 2026-06-01; v1.15.x)
-- **Role:** Landscape + import source + **TS design/architecture references**. Odysseus **appears built on** OpenCode (observed) — likely its underlying coding-agent engine. Coding depth is its focus.
+- **Role:** Landscape + import source + **TS design/architecture references**. Odysseus is **built on** OpenCode (confirmed by the Odysseus author, 2026-06-07; see [`odysseus.md`](odysseus.md)) — its underlying coding-agent engine. Coding depth is its focus.
 
 ## Architecture
 

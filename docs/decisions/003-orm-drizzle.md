@@ -28,6 +28,8 @@ This decision is **scoped to the ORM / query / migration layer only**. The concr
 
 Evidence (verified 2026-06-02): Drizzle is the near-universal ORM for TanStack Start; it targets the Postgres dialect for both `node-postgres`/`postgres-js` (server) and a **PGlite driver** (`drizzle-orm/pglite`) for the local store, with `drizzle-kit` for migrations. Prisma's engine is Node-oriented and conflicts with edge/WASM targets. ([Better Auth Drizzle adapter](https://better-auth.com/docs/adapters/drizzle))
 
+**Re-verified 2026-06-07:** no material change. Stable `drizzle-orm` 0.45.2 / `drizzle-kit` 0.31.10 are unchanged (frozen since 2026-03-27); the `drizzle-orm/pglite` driver is still shipped upstream (historical for us — the client store is SQLite per [ADR-001](001-data-layer-tanstack-db-electric-pglite.md)). The "relational query API still maturing" caveat stands: **Relational Queries v2** is the stabilization path but ships only on the **1.0 line (currently `1.0.0-rc.3`, not GA)**, which removes RQB v1 (`db._query`) and reworks the casing API. Stay on the 0.45.x stable line; treat 1.0 GA as a future breaking upgrade to evaluate when it lands.
+
 ## Decision
 
 Adopt **Drizzle (drizzle-orm)** as the ORM / query builder.

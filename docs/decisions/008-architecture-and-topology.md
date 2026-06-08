@@ -17,6 +17,8 @@ This decision is **scoped to topology, modularity, runtime, native strategy, and
 
 Evidence (verified 2026-06-02): Hono is a tiny **multi-runtime** (Node/Bun/Deno/edge) MIT web framework with **Hono RPC** (type-safe client) and first-class streaming; Tauri 2 targets **desktop and mobile** at ~10× smaller / ~5× less RAM than Electron; Fumadocs supports **TanStack Start**; t3code demonstrates a modular package layout (schema-only `contracts`, explicit subpath exports, no barrels). ([Hono](https://hono.dev) · [Tauri vs Electron](https://rustify.rs/articles/rust-tauri-vs-electron-2026) · [Fumadocs × TanStack Start](https://www.fumadocs.dev/docs/manual-installation/tanstack-start))
 
+**Re-verified 2026-06-07:** holds, no material change. Hono 4.12.23, `@tauri-apps/cli` 2.11.2 (Tauri still on the 2.x line — no v3), and Fumadocs 16.9.3 are all current with no breaking changes since 2026-06-02; Hono RPC + streaming and the Fumadocs × TanStack Start integration are intact.
+
 ## Decision
 
 1. **Modular monorepo from the ground up.** Turborepo with a deliberate `packages/*` decomposition — `core` (agent runtime + domain/business logic), `extensions` (internal extension system), `shared`/`contracts` (schemas, types) — each a real package with explicit boundaries (explicit subpath exports, **no barrel files**). `apps/*` are thin shells (`web`, `docs`, later `desktop`/`mobile`). **Business/core logic lives in packages, never baked into an app.**

@@ -3,6 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-06-02
 - **Authors:** @jbabin91
+- **Upstream re-verified:** 2026-06-07 (`@tanstack/ai` 0.28.0) — see _Upstream delta_ below; the decision is unchanged.
 
 ## Context
 
@@ -17,6 +18,8 @@ Constraints that apply:
 This decision is **scoped to the provider/transport layer, local serving, and agent-loop ownership**. Embeddings / vector memory (thread #4), MCP + tool/approval specifics (Rung 3), and which providers are actually enabled are deferred.
 
 Evidence (verified 2026-06-02): [`@tanstack/ai`](https://github.com/TanStack/ai) v0.26.0 (npm `latest`) — provider-agnostic TS AI SDK (streaming chat, tool calling, agents), adapters incl. `@tanstack/ai-ollama` + OpenAI-compatible, structured output via Zod/ArkType/Valibot, **AG-UI compliant**. For single-user serving all three are viable but **not equal on speed**: llama.cpp is fastest (≈4× Ollama on the same hardware in the cited benchmark), Ollama is easiest (OpenAI-compatible at `:11434`), vLLM targets concurrent multi-user (NVIDIA-only, heavy). Odysseus treats all of them as pluggable backends behind an OpenAI-compatible API. ([serving comparison](https://www.decodesfuture.com/articles/llama-cpp-vs-ollama-vs-vllm-local-llm-stack-guide))
+
+**Upstream delta (re-verified 2026-06-07, `@tanstack/ai` 0.28.0; was 0.26.0):** the SDK broadened fast. It now ships a composable **agent loop** (`agentLoopStrategy`: `maxIterations` / `untilFinishReason` / `combineStrategies` + custom strategies), **Code Mode** (the LLM writes and executes TypeScript to orchestrate tools) over swappable **sandboxed isolates** (`ai-isolate-node` via isolated-vm / `-quickjs` / `-cloudflare`), an **Agent Skills** runtime (`ai-code-mode-skills`), a host-side **MCP client** (`@tanstack/ai-mcp`), real-time **voice**, **devtools / OpenTelemetry** observability, and first-party providers (anthropic / gemini / grok / openrouter / openai / ollama). `useChat` now lives in `@tanstack/ai-react`. **Breaking in 0.27.0:** sampling options (`temperature` / `topP` / `maxTokens`) moved into provider `modelOptions` (middleware mutates `config.modelOptions`). All of it is OSS / self-hostable, so it stays within constraints. **Boundary watch:** much of the commodity loop the "build our own" decision below assumed we'd write (loop strategies, sandboxed execution, MCP client, skills runtime) is now upstream — revisit the build-own-vs-use boundary at **R3** ([`telemachus-ml5`](../specs/roadmap.md)); the wedge stays own-code (run/step model wired to [ADR-001](001-data-layer-tanstack-db-electric-pglite.md) collections, glass-box replay+fork, durable working memory). Not yet installed (E0), so this records the upstream state — not a code change.
 
 ## Decision
 
@@ -35,7 +38,7 @@ Evidence (verified 2026-06-02): [`@tanstack/ai`](https://github.com/TanStack/ai)
 
 **Harder / accepted tradeoffs:**
 
-- **TanStack AI is pre-1.0** (v0.26.0, fast-moving) — pin versions, track releases.
+- **TanStack AI is pre-1.0** (v0.28.0, fast-moving — 0.27.0 already shipped a breaking sampling-options move) — pin versions, track releases.
 - **Building the agent loop is real work** — accepted; it's the differentiator.
 - **Managing serving binaries from Node** (process supervision, health checks, port probing) is ours — reference Odysseus's model-serving manager.
 

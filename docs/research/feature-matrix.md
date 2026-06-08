@@ -3,6 +3,7 @@
 - **Date:** 2026-06-01 (snapshot; projects move fast — re-verify before committing roadmap)
 - **Scope:** High-level capability comparison across the 10 code-level [deep dives](deep-dives/). The deep dives hold the finer detail; this is the at-a-glance "who has what + where the whitespace is." Companion to [`landscape.md`](landscape.md), [`differentiation-opportunities.md`](differentiation-opportunities.md), [`community-requests.md`](community-requests.md), and [`missing-features.md`](missing-features.md).
 - **Method & confidence:** From the 2026-06-01 code-level deep dives (shallow-clone sweeps). Cells are _code-present_, not maturity-verified; `?` = unverified. Star counts are `gh`-reported, approximate. Pierre (diffs/trees) is a UI-component reference, intentionally **not** a column (see [`deep-dives/pierre.md`](deep-dives/pierre.md)).
+- **Partial re-verify:** the **Odysseus** column was re-checked against the commit log on 2026-06-07 (see [`deep-dives/odysseus.md`](deep-dives/odysseus.md) → _Recent trajectory_); other columns remain the 2026-06-01 snapshot.
 
 **Legend:** ✅ yes · ◑ partial/adjacent · — no · ? unverified
 **Columns:** Ody=Odysseus · OWUI=Open WebUI · LibC=LibreChat · Lobe=Lobe Chat · Herm=Hermes · Claw=OpenClaw · Letta=Letta · OCode=OpenCode · t3=t3code · pi=pi
@@ -31,7 +32,7 @@
 | Context compaction             | ✅  | ?    | ?    | ✅   | ✅   | ✅   | ✅    | ✅    | ✅  | ✅  |
 | Agent loop + tools             | ✅  | ◑    | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | ✅  | ✅  |
 | Subagents / multi-agent        | ?   | —    | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | —   | ◑   |
-| Plan / read-only mode          | ◑   | —    | —    | —    | —    | —    | —     | ✅    | ✅  | ◑   |
+| Plan / read-only mode          | ✅  | —    | —    | —    | —    | —    | —     | ✅    | ✅  | ◑   |
 | Tool approval (allow/ask/deny) | ◑   | —    | ◑    | —    | ✅   | ✅   | ✅    | ✅    | ✅  | ◑   |
 | Scheduling / cron              | ✅  | ✅   | —    | ◑    | ✅   | ✅   | —     | —     | —   | —   |
 
@@ -39,7 +40,7 @@
 
 | Capability                  | Ody | OWUI | LibC | Lobe | Herm | Claw | Letta | OCode | t3  | pi  |
 | --------------------------- | --- | ---- | ---- | ---- | ---- | ---- | ----- | ----- | --- | --- |
-| Many providers              | ◑   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | ✅  | ✅  |
+| Many providers              | ✅  | ✅   | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | ✅  | ✅  |
 | Local serving (Ollama/vLLM) | ✅  | ✅   | ✅   | ✅   | ✅   | ✅   | ✅    | ✅    | ◑   | ◑   |
 | Model routing / fallback    | ?   | ◑    | ◑    | ◑    | ✅   | ✅   | ✅    | ◑     | ◑   | ◑   |
 | Hardware-fit cookbook       | ✅  | —    | —    | —    | —    | —    | —     | —     | —   | ◑   |
@@ -100,7 +101,7 @@
 
 ## Corrections / notes
 
-- **Odysseus _appears_ built on OpenCode** (observed, not independently confirmed) — two projects here, one layered on the other.
+- **Odysseus is built on OpenCode** (confirmed by the Odysseus author, 2026-06-07; see [`deep-dives/odysseus.md`](deep-dives/odysseus.md)) — two projects here, one layered on the other. As of the 2026-06-07 re-check it has added plan mode plus file/code tools and folder-confined workspaces, narrowing the gap with OpenCode's coding surface (see [`deep-dives/odysseus.md`](deep-dives/odysseus.md) → _Recent trajectory_).
 - All cells are **code-present**, not maturity/stability-verified (several repos are days-to-months old). Star counts are `gh`-reported and approximate.
 - Lobe Chat routes feature requests through Discussions (not issue-searchable here); its cells come from the code deep dive.
 

@@ -21,6 +21,8 @@ This decision is **scoped to the component foundation and theming approach only*
 
 Evidence (verified 2026-06-02): see [`../research/ui-component-landscape.md`](../research/ui-component-landscape.md). Intent UI is built on **react-aria-components + Tailwind CSS v4 + tailwind-variants**, distributed **copy-paste** via the shadcn CLI (source lands in-repo), **MIT**, 80+ components including dark-mode/theming, ~1.9k★ and actively maintained. No AI/chat kit is built on react-aria-components — they are Radix/shadcn-based.
 
+**Re-verified 2026-06-07:** holds, no material change. `react-aria-components` 1.18.0, Tailwind CSS 4.3.0 (v4 stable), `tailwind-variants` 3.2.2 — all current. Intent UI: MIT, 1,933★ (≈flat), actively maintained (commits 2026-06-07), still on react-aria-components + Tailwind. The load-bearing claim holds — assistant-ui, AI Elements, and prompt-kit remain Radix/shadcn-based; no notable AI/chat kit is built natively on react-aria-components. (Accuracy nit: prompt-kit is a shadcn/ui kit with _optional_ React Aria support, not React-Aria-based — it stays a reference, not a dependency.)
+
 ## Decision
 
 Adopt **react-aria-components** (Adobe) as the behavior/accessibility primitive layer, with **Intent UI** as the styled component foundation.

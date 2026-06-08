@@ -17,6 +17,8 @@ This decision is **scoped to the app framework and its deployment layer only**. 
 
 Evidence (verified 2026-06-02): TanStack Start's hosting docs recommend the **Nitro** package (v3, via its built-in `nitro/vite` plugin) as the deployment layer; Nitro is host-agnostic and emits per-target presets, including a **node preset** that produces `.output/server/index.mjs` — a standalone Node server. ([TanStack Start hosting](https://tanstack.com/start/latest/docs/framework/react/guide/hosting))
 
+**Re-verified 2026-06-07:** no material change. `@tanstack/react-start` 1.168.25 and `@tanstack/react-router` 1.170.15 are current (≈daily cadence); no breaking changes since 2026-06-02, and the node preset → standalone `.output/server/index.mjs` self-host path is intact. **Nitro v3 is still beta-only** (`nitro@latest` = `3.0.260603-beta`; the lone `nitro@3.0.0` tag pins Vite 7 / srvx 0.8 and is incompatible), so the force-pinned `nitro-nightly` stays required ([`telemachus-8zj.13`](../specs/roadmap.md)). Nuance: `nitro@latest`'s beta is now code-equivalent to the pinned nightly, so a later move off the _nightly channel_ to the beta is possible without resolving the underlying pre-stable tradeoff.
+
 ## Decision
 
 Adopt **TanStack Start** as the application framework, with **Nitro** (v3, via the `nitro/vite` plugin) as the server/deployment layer.

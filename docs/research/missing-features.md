@@ -22,17 +22,17 @@ These items share one shape — **reactive UI over synced local agent/conversati
 
 Lower-risk adds (someone ships it; study + reimplement):
 
-| Feature                                       | Best reference(s)                                                               | Notes                                                       |
-| --------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **Tool approval (allow / ask / deny)**        | OpenCode `PermissionV2` (arity matching, reply modes, subagent inheritance)     | Also high community demand (LibreChat 47👍). Plan/Act rung. |
-| **Skills registry**                           | Hermes skills.sh, OpenClaw ClawHub                                              | Odysseus has skills, no registry.                           |
-| **Editable / white-box memory**               | Lobe (5-layer editable), Letta (memory blocks)                                  | Tier-2 wedge-adjacent.                                      |
-| **Multi-device sync / Gateway**               | OpenClaw (node pairing, WS relay)                                               | Distinct from CRDT sync; an interim.                        |
-| **Serverless hibernation**                    | Hermes (Modal/Daytona sleep-when-idle)                                          | For durable always-on agents.                               |
-| **Sandboxed exec backends**                   | Hermes (6 backends), OpenClaw (Docker/SSH/OpenShell), OpenCode (containers/PTY) |                                                             |
-| **Model routing / fallback**                  | Hermes (error-classified failover), OpenCode (ProviderV2)                       |                                                             |
-| **Per-component context breakdown + pruning** | (Tier-2 gap; Cursor/OWUI have context bar)                                      | The still-open slice.                                       |
-| **Deep research**                             | Odysseus, Open WebUI                                                            | Table stakes for a workspace.                               |
+| Feature                                       | Best reference(s)                                                               | Notes                                                             |
+| --------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Tool approval (allow / ask / deny)**        | OpenCode `PermissionV2` (arity matching, reply modes, subagent inheritance)     | Also high community demand (LibreChat 47👍). Plan/Act rung.       |
+| **Skills registry**                           | Hermes skills.sh, OpenClaw ClawHub                                              | Odysseus has skills + GitHub-URL import, but no central registry. |
+| **Editable / white-box memory**               | Lobe (5-layer editable), Letta (memory blocks)                                  | Tier-2 wedge-adjacent.                                            |
+| **Multi-device sync / Gateway**               | OpenClaw (node pairing, WS relay)                                               | Distinct from CRDT sync; an interim.                              |
+| **Serverless hibernation**                    | Hermes (Modal/Daytona sleep-when-idle)                                          | For durable always-on agents.                                     |
+| **Sandboxed exec backends**                   | Hermes (6 backends), OpenClaw (Docker/SSH/OpenShell), OpenCode (containers/PTY) |                                                                   |
+| **Model routing / fallback**                  | Hermes (error-classified failover), OpenCode (ProviderV2)                       |                                                                   |
+| **Per-component context breakdown + pruning** | (Tier-2 gap; Cursor/OWUI have context bar)                                      | The still-open slice.                                             |
+| **Deep research**                             | Odysseus, Open WebUI                                                            | Table stakes for a workspace.                                     |
 
 ## Tier 3 — High-demand table stakes (from the sweep; not differentiators, but wanted)
 

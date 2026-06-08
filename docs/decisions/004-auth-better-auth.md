@@ -17,6 +17,8 @@ This decision is **scoped to the auth library and where auth state lives**. Whic
 
 Evidence (verified 2026-06-02): Better Auth ships a **Drizzle adapter** (generates/owns the auth tables through Drizzle) and a **`tanstackStartCookies`** plugin for cookie handling in Start. ([Better Auth Drizzle adapter](https://better-auth.com/docs/adapters/drizzle), [Better Auth installation](https://better-auth.com/docs/installation))
 
+**Re-verified 2026-06-07:** holds, no material change. Stable is still `better-auth` 1.6.14 (unchanged since this ADR); the Drizzle adapter (`better-auth/adapters/drizzle`) and `tanstackStartCookies` (`better-auth/tanstack-start`) are confirmed and unchanged. A 1.7.0 release is in beta with breaking changes scoped to OAuth/OIDC, SAML, and SCIM — none touching our email/password + session + Start-cookie integration; pin before adopting 1.7.0.
+
 ## Decision
 
 Adopt **Better Auth**.
