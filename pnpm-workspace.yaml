@@ -25,8 +25,14 @@ catalog:
   uuid: ^14.0.0
   vitest: ^4.1.8
   zod: ^4.4.3
+  '@tanstack/db': ^0.6.8
+  '@tanstack/browser-db-sqlite-persistence': ^0.2.0
 
 allowBuilds:
+  # Denied: its postinstall downloads the PowerSync dynamic core over the
+  # network. We use plain wa-sqlite/OPFS (the prebuilt dist/*.wasm already
+  # ship); the PowerSync core isn't used. Revisit only if OPFS fails at runtime.
+  '@journeyapps/wa-sqlite': false
   esbuild: true
   lefthook: true
   lightningcss: true

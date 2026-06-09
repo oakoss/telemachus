@@ -12,6 +12,10 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@tanstack/browser-db-sqlite-persistence": "catalog:",
+    "@tanstack/db": "catalog:"
+  },
   "devDependencies": {
     "@oakoss/eslint": "workspace:*",
     "@oakoss/typescript": "workspace:*",

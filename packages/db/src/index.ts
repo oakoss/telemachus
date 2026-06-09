@@ -1,1 +1,1 @@
-export const name = '@oakoss/db';
+export * from './persistence';
