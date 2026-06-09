@@ -1,5 +1,7 @@
-// Future rungs extend this map (foundations.md:65): wa-sqlite adds
-// 'wasm-unsafe-eval', OPFS adds 'worker-src', COOP/COEP ship as sibling headers.
+// wa-sqlite/OPFS findings (telemachus-8zj.3): the wasm is base64-inlined and
+// compiled inside the OPFS worker, whose static-asset response carries no CSP —
+// so the document policy needs no 'wasm-unsafe-eval'. No SharedArrayBuffer in
+// the worker bundle (sync VFS), so COOP/COEP are unneeded too.
 
 // Start emits the nonce on a <meta property> when ssr.nonce is set; the client
 // reads it back during hydration.
@@ -16,7 +18,8 @@ type Directive =
   | 'object-src'
   | 'script-src'
   | 'style-src'
-  | 'upgrade-insecure-requests';
+  | 'upgrade-insecure-requests'
+  | 'worker-src';
 
 const SELF = "'self'";
 
@@ -32,6 +35,9 @@ function directives(nonce: string): Record<Directive, string[]> {
     'img-src': [SELF, 'data:'],
     'font-src': [SELF],
     'connect-src': [SELF],
+    // Explicit because the fallback chain ends at script-src, where
+    // 'strict-dynamic' discards 'self' — blocking the same-origin OPFS worker.
+    'worker-src': [SELF],
     'object-src': ["'none'"],
     'base-uri': [SELF],
     'frame-ancestors': ["'none'"],

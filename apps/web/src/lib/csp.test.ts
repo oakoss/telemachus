@@ -21,6 +21,11 @@ test('locks down the high-risk directives', () => {
   expect(value).toContain('upgrade-insecure-requests');
 });
 
+test('worker-src is explicit — strict-dynamic voids the script-src fallback', () => {
+  const { value } = buildCsp(NONCE);
+  expect(value).toContain("worker-src 'self'");
+});
+
 test('reportOnly toggles only the header name, never the policy', () => {
   const enforce = buildCsp(NONCE);
   const report = buildCsp(NONCE, { reportOnly: true });
