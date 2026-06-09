@@ -30,6 +30,13 @@ export const createAppEnv = (runtimeEnv: EnvSource) =>
     },
     runtimeEnv,
     server: {
+      // No default: a connection string must be explicit, so dev creds can't
+      // silently become a deployment's.
+      DATABASE_URL: z.url({
+        protocol: /^postgres(ql)?$/,
+        hostname: /.+/,
+        error: 'must be a postgres:// connection string',
+      }),
       LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
       NODE_ENV: z
         .enum(['development', 'production', 'test'])
