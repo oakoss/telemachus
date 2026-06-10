@@ -19,8 +19,8 @@ import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
-import { Route as ApiElectricSmokeShapeRouteImport } from './routes/api.electric-smoke.shape'
-import { Route as ApiElectricSmokeNotesRouteImport } from './routes/api.electric-smoke.notes'
+import { Route as ApiElectricSmokeShapeRouteImport } from './routes/api/electric-smoke/shape'
+import { Route as ApiElectricSmokeNotesRouteImport } from './routes/api/electric-smoke/notes'
 
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',

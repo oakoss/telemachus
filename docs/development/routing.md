@@ -5,6 +5,7 @@ Adapted from the finance-tracker ruleset (2026-06-10, bd `telemachus-utf`) for t
 ## File conventions
 
 - **Flat route files** for simple pages (`sign-in.tsx`); **`route.tsx`** for layout routes inside a folder.
+- **Directories for nested URL segments** — `api/electric-smoke/notes.ts` serves `/api/electric-smoke/notes`; dot-separated flat filenames (`api.electric-smoke.notes.ts`) are not used. API routes follow the same conventions as page routes.
 - **`_prefix` folders** are pathless grouping routes (no URL segment); **`$param`** for dynamic segments, **`$`** for splats; a **`-` prefix** excludes a file from routing.
 - **Filenames are kebab-case** — lint-enforced project-wide (`unicorn/filename-case`, root `.oxlintrc.json`, with ignores for `$param` and `-excluded` files).
 
@@ -20,7 +21,7 @@ Shells live in `src/components/` and own the page landmarks — `__root.tsx` del
 
 ## Route files stay thin
 
-- **Server logic never lives inline in route files.** Handlers live in `src/lib/server/{feature}.ts` as plain, unit-testable functions; the route file is a one-line delegator (see `api.electric-smoke.*.ts`). At R1+, domain logic moves behind `packages/core` per [ADR-008](../decisions/008-architecture-and-topology.md) — the route/BFF layer stays a delegator either way.
+- **Server logic never lives inline in route files.** Handlers live in `src/lib/server/{feature}.ts` as plain, unit-testable functions; the route file is a one-line delegator (see `api/electric-smoke/*.ts`). At R1+, domain logic moves behind `packages/core` per [ADR-008](../decisions/008-architecture-and-topology.md) — the route/BFF layer stays a delegator either way.
 - **Feature UI lives in `src/components/`** (module folders when a real module structure emerges); route files compose.
 - **Loaders preload TanStack DB collections** — `await collection.preload()` under `ssr: false` (TanStack DB is client-only; the loader runs in the browser). Guard against a sync backend that never marks ready — race `preload()` with a deadline that rejects into the route's `errorComponent` (see `_public/electric-smoke.tsx`). There is no `queryClient.ensureQueryData` here; that's the finance-tracker (TanStack Query) equivalent.
 
