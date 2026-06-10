@@ -17,7 +17,7 @@ const logger = createConsoleLogger({ bindings: { route: '/electric-smoke' } });
 const PRELOAD_DEADLINE_MS = 10_000;
 
 // ssr: false — OPFS, wa-sqlite worker, and the Electric shape stream are browser-only.
-export const Route = createFileRoute('/electric-smoke')({
+export const Route = createFileRoute('/_public/electric-smoke')({
   ssr: false,
   loader: async () => {
     const notes = await getElectricSmokeNotes();

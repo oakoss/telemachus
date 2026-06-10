@@ -18,7 +18,7 @@ export const noteSchema = z.object({
 export type SmokeNoteRow = z.infer<typeof noteSchema>;
 
 let env: Env | null = null;
-export const getEnv = () => (env ??= createAppEnv(process.env));
+const getEnv = () => (env ??= createAppEnv(process.env));
 
 let sql: null | ReturnType<typeof postgres> = null;
 const getSql = () => (sql ??= postgres(getEnv().DATABASE_URL));
@@ -26,7 +26,7 @@ const getSql = () => (sql ??= postgres(getEnv().DATABASE_URL));
 // Throwaway spike table (telemachus-8zj.8) — real tables arrive with the R1
 // Drizzle schema + migrations. created_at is epoch ms (int8); the client
 // parses int8 back to a number (see lib/electric-smoke.ts).
-export const ensureTable = memoizeAsync(
+const ensureTable = memoizeAsync(
   async () =>
     getSql()`
       CREATE TABLE IF NOT EXISTS electric_smoke_notes (
@@ -40,7 +40,7 @@ export const ensureTable = memoizeAsync(
 // The txid must come from the SAME transaction as the insert — Electric
 // streams it back with the change, letting the client drop its optimistic
 // state exactly when the synced row arrives (the 8zj.8 write-path de-dupe).
-export const insertSmokeNote = async (note: SmokeNoteRow) => {
+const insertSmokeNote = async (note: SmokeNoteRow) => {
   await ensureTable();
   return getSql().begin(async (tx) => {
     const [row] = await tx<

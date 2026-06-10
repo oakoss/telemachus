@@ -23,7 +23,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <main>{children}</main>
+        {/* Landmarks (<main>, <header>) belong to the route-group shells — a
+            wrapper here would nest <main> inside <main>. */}
+        {children}
         <TanStackDevtools
           config={{ position: 'bottom-right' }}
           plugins={[

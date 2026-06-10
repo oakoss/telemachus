@@ -9,26 +9,65 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ElectricSmokeRouteImport } from './routes/electric-smoke'
-import { Route as DbSmokeRouteImport } from './routes/db-smoke'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as PublicElectricSmokeRouteImport } from './routes/_public/electric-smoke'
+import { Route as PublicDbSmokeRouteImport } from './routes/_public/db-smoke'
+import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
+import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as ApiElectricSmokeShapeRouteImport } from './routes/api.electric-smoke.shape'
 import { Route as ApiElectricSmokeNotesRouteImport } from './routes/api.electric-smoke.notes'
 
-const ElectricSmokeRoute = ElectricSmokeRouteImport.update({
-  id: '/electric-smoke',
-  path: '/electric-smoke',
+const PublicRouteRoute = PublicRouteRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DbSmokeRoute = DbSmokeRouteImport.update({
-  id: '/db-smoke',
-  path: '/db-smoke',
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicElectricSmokeRoute = PublicElectricSmokeRouteImport.update({
+  id: '/electric-smoke',
+  path: '/electric-smoke',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicDbSmokeRoute = PublicDbSmokeRouteImport.update({
+  id: '/db-smoke',
+  path: '/db-smoke',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const ApiElectricSmokeShapeRoute = ApiElectricSmokeShapeRouteImport.update({
   id: '/api/electric-smoke/shape',
@@ -42,24 +81,39 @@ const ApiElectricSmokeNotesRoute = ApiElectricSmokeNotesRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/db-smoke': typeof DbSmokeRoute
-  '/electric-smoke': typeof ElectricSmokeRoute
+  '/': typeof PublicIndexRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/db-smoke': typeof PublicDbSmokeRoute
+  '/electric-smoke': typeof PublicElectricSmokeRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/db-smoke': typeof DbSmokeRoute
-  '/electric-smoke': typeof ElectricSmokeRoute
+  '/': typeof PublicIndexRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/db-smoke': typeof PublicDbSmokeRoute
+  '/electric-smoke': typeof PublicElectricSmokeRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/db-smoke': typeof DbSmokeRoute
-  '/electric-smoke': typeof ElectricSmokeRoute
+  '/_app': typeof AppRouteRouteWithChildren
+  '/_auth': typeof AuthRouteRouteWithChildren
+  '/_public': typeof PublicRouteRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/sign-in': typeof AuthSignInRoute
+  '/_auth/sign-up': typeof AuthSignUpRoute
+  '/_public/db-smoke': typeof PublicDbSmokeRoute
+  '/_public/electric-smoke': typeof PublicElectricSmokeRoute
+  '/_public/': typeof PublicIndexRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
@@ -67,6 +121,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
+    | '/reset-password'
+    | '/sign-in'
+    | '/sign-up'
     | '/db-smoke'
     | '/electric-smoke'
     | '/api/electric-smoke/notes'
@@ -74,49 +132,109 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
+    | '/reset-password'
+    | '/sign-in'
+    | '/sign-up'
     | '/db-smoke'
     | '/electric-smoke'
     | '/api/electric-smoke/notes'
     | '/api/electric-smoke/shape'
   id:
     | '__root__'
-    | '/'
-    | '/db-smoke'
-    | '/electric-smoke'
+    | '/_app'
+    | '/_auth'
+    | '/_public'
+    | '/_app/dashboard'
+    | '/_auth/reset-password'
+    | '/_auth/sign-in'
+    | '/_auth/sign-up'
+    | '/_public/db-smoke'
+    | '/_public/electric-smoke'
+    | '/_public/'
     | '/api/electric-smoke/notes'
     | '/api/electric-smoke/shape'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DbSmokeRoute: typeof DbSmokeRoute
-  ElectricSmokeRoute: typeof ElectricSmokeRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  PublicRouteRoute: typeof PublicRouteRouteWithChildren
   ApiElectricSmokeNotesRoute: typeof ApiElectricSmokeNotesRoute
   ApiElectricSmokeShapeRoute: typeof ApiElectricSmokeShapeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/electric-smoke': {
-      id: '/electric-smoke'
-      path: '/electric-smoke'
-      fullPath: '/electric-smoke'
-      preLoaderRoute: typeof ElectricSmokeRouteImport
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/db-smoke': {
-      id: '/db-smoke'
-      path: '/db-smoke'
-      fullPath: '/db-smoke'
-      preLoaderRoute: typeof DbSmokeRouteImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/electric-smoke': {
+      id: '/_public/electric-smoke'
+      path: '/electric-smoke'
+      fullPath: '/electric-smoke'
+      preLoaderRoute: typeof PublicElectricSmokeRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/db-smoke': {
+      id: '/_public/db-smoke'
+      path: '/db-smoke'
+      fullPath: '/db-smoke'
+      preLoaderRoute: typeof PublicDbSmokeRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_auth/sign-up': {
+      id: '/_auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/sign-in': {
+      id: '/_auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/api/electric-smoke/shape': {
       id: '/api/electric-smoke/shape'
@@ -135,10 +253,54 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRouteRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
+interface AuthRouteRouteChildren {
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface PublicRouteRouteChildren {
+  PublicDbSmokeRoute: typeof PublicDbSmokeRoute
+  PublicElectricSmokeRoute: typeof PublicElectricSmokeRoute
+  PublicIndexRoute: typeof PublicIndexRoute
+}
+
+const PublicRouteRouteChildren: PublicRouteRouteChildren = {
+  PublicDbSmokeRoute: PublicDbSmokeRoute,
+  PublicElectricSmokeRoute: PublicElectricSmokeRoute,
+  PublicIndexRoute: PublicIndexRoute,
+}
+
+const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
+  PublicRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DbSmokeRoute: DbSmokeRoute,
-  ElectricSmokeRoute: ElectricSmokeRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  PublicRouteRoute: PublicRouteRouteWithChildren,
   ApiElectricSmokeNotesRoute: ApiElectricSmokeNotesRoute,
   ApiElectricSmokeShapeRoute: ApiElectricSmokeShapeRoute,
 }

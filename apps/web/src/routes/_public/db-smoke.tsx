@@ -9,7 +9,7 @@ const logger = createConsoleLogger({ bindings: { route: '/db-smoke' } });
 
 // ssr: false — OPFS and the wa-sqlite worker exist only in the browser.
 // The loader hydrates the collection before first paint so the list never flashes empty.
-export const Route = createFileRoute('/db-smoke')({
+export const Route = createFileRoute('/_public/db-smoke')({
   ssr: false,
   loader: async () => {
     const notes = await getSmokeNotes();
