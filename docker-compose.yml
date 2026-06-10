@@ -1,8 +1,8 @@
 # Dev backing services. The app itself runs on the host (`pnpm dev`) — Docker
 # is only for backing services here, the deploy image (8zj.6.2), and test
-# databases (Testcontainers). Unit/CI tests use in-memory PGlite, so they need
-# no Docker. Scope is intentionally limited to Postgres for server Drizzle +
-# Better Auth; Electric and MinIO arrive at later rungs.
+# databases (Testcontainers). Scope: Postgres for server Drizzle + Better Auth,
+# and Electric behind the `electric` profile (the 8zj.8 sync spike):
+# `docker compose --profile electric up -d`. MinIO arrives at a later rung.
 name: telemachus
 
 services:
@@ -13,6 +13,8 @@ services:
     # recall, a later rung) swaps to the pgvector/pgvector image when needed.
     image: postgres:17
     restart: unless-stopped
+    # Electric consumes the WAL via logical replication; harmless without it.
+    command: ['postgres', '-c', 'wal_level=logical']
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-telemachus}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-telemachus}
@@ -33,6 +35,25 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  electric:
+    # 1.6.10 released inside the 1-day cooldown window (same posture as npm
+    # deps); bump on the next touch.
+    image: electricsql/electric:1.6.9
+    restart: unless-stopped
+    profiles: [electric]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-telemachus}:${POSTGRES_PASSWORD:-telemachus}@postgres:5432/${POSTGRES_DB:-telemachus}?sslmode=disable
+      # Dev-only: no API auth inside the loopback-bound container. The app's
+      # shape proxy is the only intended consumer.
+      ELECTRIC_INSECURE: 'true'
+    ports:
+      # Loopback-only, same reasoning as Postgres above. Host port 3010 — the
+      # app dev server owns 3000 and the e2e build 3100.
+      - '127.0.0.1:${ELECTRIC_PORT:-3010}:3000'
 
 volumes:
   pgdata:

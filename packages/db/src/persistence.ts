@@ -1,3 +1,4 @@
+import { memoizeAsync } from '@oakoss/shared';
 import {
   BrowserCollectionCoordinator,
   createBrowserWASQLitePersistence,
@@ -10,30 +11,17 @@ const DATABASE_NAME = 'telemachus.sqlite';
 const COORDINATOR_NAME = 'telemachus';
 // Owned here so a library default change can't silently shift our on-device
 // migration baseline.
-const DEFAULT_SCHEMA_VERSION = 1;
+export const DEFAULT_SCHEMA_VERSION = 1;
 
-// One OPFS database + leader-elected coordinator for the whole app, opened
-// lazily on first use (browser-only) and shared by every collection.
-let persistence:
-  | Promise<ReturnType<typeof createBrowserWASQLitePersistence>>
-  | undefined;
-
-const getPersistence = () =>
-  (persistence ??= (async () => {
-    const database = await openBrowserWASQLiteOPFSDatabase({
-      databaseName: DATABASE_NAME,
-    });
-    const coordinator = new BrowserCollectionCoordinator({
-      dbName: COORDINATOR_NAME,
-    });
-    return createBrowserWASQLitePersistence({ coordinator, database });
-  })().catch((error: unknown) => {
-    // Don't cache a rejected open — let the next caller retry a transient OPFS
-    // failure (quota, a locked VFS, an unsupported context) rather than wedging
-    // the session until reload.
-    persistence = undefined;
-    throw error;
-  }));
+export const getPersistence = memoizeAsync(async () => {
+  const database = await openBrowserWASQLiteOPFSDatabase({
+    databaseName: DATABASE_NAME,
+  });
+  const coordinator = new BrowserCollectionCoordinator({
+    dbName: COORDINATOR_NAME,
+  });
+  return createBrowserWASQLitePersistence({ coordinator, database });
+});
 
 export type PersistedCollectionConfig<
   T extends object,

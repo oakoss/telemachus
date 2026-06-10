@@ -9,9 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ElectricSmokeRouteImport } from './routes/electric-smoke'
 import { Route as DbSmokeRouteImport } from './routes/db-smoke'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiElectricSmokeShapeRouteImport } from './routes/api.electric-smoke.shape'
+import { Route as ApiElectricSmokeNotesRouteImport } from './routes/api.electric-smoke.notes'
 
+const ElectricSmokeRoute = ElectricSmokeRouteImport.update({
+  id: '/electric-smoke',
+  path: '/electric-smoke',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DbSmokeRoute = DbSmokeRouteImport.update({
   id: '/db-smoke',
   path: '/db-smoke',
@@ -22,35 +30,80 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiElectricSmokeShapeRoute = ApiElectricSmokeShapeRouteImport.update({
+  id: '/api/electric-smoke/shape',
+  path: '/api/electric-smoke/shape',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiElectricSmokeNotesRoute = ApiElectricSmokeNotesRouteImport.update({
+  id: '/api/electric-smoke/notes',
+  path: '/api/electric-smoke/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/db-smoke': typeof DbSmokeRoute
+  '/electric-smoke': typeof ElectricSmokeRoute
+  '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
+  '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/db-smoke': typeof DbSmokeRoute
+  '/electric-smoke': typeof ElectricSmokeRoute
+  '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
+  '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/db-smoke': typeof DbSmokeRoute
+  '/electric-smoke': typeof ElectricSmokeRoute
+  '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
+  '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/db-smoke'
+  fullPaths:
+    | '/'
+    | '/db-smoke'
+    | '/electric-smoke'
+    | '/api/electric-smoke/notes'
+    | '/api/electric-smoke/shape'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/db-smoke'
-  id: '__root__' | '/' | '/db-smoke'
+  to:
+    | '/'
+    | '/db-smoke'
+    | '/electric-smoke'
+    | '/api/electric-smoke/notes'
+    | '/api/electric-smoke/shape'
+  id:
+    | '__root__'
+    | '/'
+    | '/db-smoke'
+    | '/electric-smoke'
+    | '/api/electric-smoke/notes'
+    | '/api/electric-smoke/shape'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DbSmokeRoute: typeof DbSmokeRoute
+  ElectricSmokeRoute: typeof ElectricSmokeRoute
+  ApiElectricSmokeNotesRoute: typeof ApiElectricSmokeNotesRoute
+  ApiElectricSmokeShapeRoute: typeof ApiElectricSmokeShapeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/electric-smoke': {
+      id: '/electric-smoke'
+      path: '/electric-smoke'
+      fullPath: '/electric-smoke'
+      preLoaderRoute: typeof ElectricSmokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/db-smoke': {
       id: '/db-smoke'
       path: '/db-smoke'
@@ -65,12 +118,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/electric-smoke/shape': {
+      id: '/api/electric-smoke/shape'
+      path: '/api/electric-smoke/shape'
+      fullPath: '/api/electric-smoke/shape'
+      preLoaderRoute: typeof ApiElectricSmokeShapeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/electric-smoke/notes': {
+      id: '/api/electric-smoke/notes'
+      path: '/api/electric-smoke/notes'
+      fullPath: '/api/electric-smoke/notes'
+      preLoaderRoute: typeof ApiElectricSmokeNotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DbSmokeRoute: DbSmokeRoute,
+  ElectricSmokeRoute: ElectricSmokeRoute,
+  ApiElectricSmokeNotesRoute: ApiElectricSmokeNotesRoute,
+  ApiElectricSmokeShapeRoute: ApiElectricSmokeShapeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

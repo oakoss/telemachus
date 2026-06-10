@@ -37,6 +37,15 @@ export const createAppEnv = (runtimeEnv: EnvSource) =>
         hostname: /.+/,
         error: 'must be a postgres:// connection string',
       }),
+      // Dev/test default matches the compose `electric` profile's loopback
+      // port. Production requires it explicitly — a loopback fallback there
+      // would boot clean and fail at the first shape request instead.
+      ELECTRIC_URL:
+        runtimeEnv.NODE_ENV === 'production'
+          ? z.url({ protocol: /^https?$/, hostname: /.+/ })
+          : z
+              .url({ protocol: /^https?$/, hostname: /.+/ })
+              .default('http://localhost:3010'),
       LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
       NODE_ENV: z
         .enum(['development', 'production', 'test'])

@@ -11,16 +11,47 @@ test('applies defaults for a minimal valid environment', () => {
   expect(env.NODE_ENV).toBe('development');
   expect(env.LOG_LEVEL).toBe('info');
   expect(env.DATABASE_URL).toBe(DATABASE_URL);
+  expect(env.ELECTRIC_URL).toBe('http://localhost:3010');
+});
+
+test('rejects a non-http ELECTRIC_URL', () => {
+  expect(() =>
+    createAppEnv({ DATABASE_URL, ELECTRIC_URL: 'ftp://electric:3000' }),
+  ).toThrow(AppError);
+});
+
+test('requires ELECTRIC_URL in production', () => {
+  let caught: unknown;
+  try {
+    createAppEnv({ DATABASE_URL, NODE_ENV: 'production' });
+  } catch (error) {
+    caught = error;
+  }
+  expect(caught).toBeInstanceOf(AppError);
+  expect((caught as AppError).params?.issues).toEqual([
+    expect.stringContaining('ELECTRIC_URL'),
+  ]);
+});
+
+test('accepts an explicit ELECTRIC_URL in production', () => {
+  const env = createAppEnv({
+    DATABASE_URL,
+    ELECTRIC_URL: 'http://electric.internal:3000',
+    NODE_ENV: 'production',
+  });
+  expect(env.ELECTRIC_URL).toBe('http://electric.internal:3000');
 });
 
 test('reads provided values', () => {
   const env = createAppEnv({
     DATABASE_URL,
+    ELECTRIC_URL: 'http://electric.lan:4000',
     LOG_LEVEL: 'warn',
     NODE_ENV: 'production',
   });
   expect(env.NODE_ENV).toBe('production');
   expect(env.LOG_LEVEL).toBe('warn');
+  expect(env.ELECTRIC_URL).toBe('http://electric.lan:4000');
 });
 
 test('throws env.invalid carrying the failing field in issues', () => {

@@ -1,32 +1,6 @@
-import { type Page, expect, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-const trapErrors = (page: Page) => {
-  const errors: string[] = [];
-  page.on('console', (message) => {
-    // The app's structured logger writes error lines via console.log, so a
-    // type check alone is blind to them.
-    if (
-      message.type() === 'error' ||
-      /"level":"(?:error|fatal)"/.test(message.text())
-    ) {
-      errors.push(message.text());
-    }
-  });
-  page.on('pageerror', (error) => errors.push(error.message));
-  page.on('requestfailed', (request) => {
-    // reload() aborts in-flight requests; aborts aren't failures.
-    if (request.failure()?.errorText !== 'net::ERR_ABORTED') {
-      errors.push(`request failed: ${request.url()}`);
-    }
-  });
-  return errors;
-};
-
-// Trailing async failures (worker, CSP) need a beat to land before the assert.
-const expectNoErrors = async (page: Page, errors: string[]) => {
-  await page.waitForTimeout(250);
-  expect(errors).toEqual([]);
-};
+import { expectNoErrors, trapErrors } from './support/trap-errors';
 
 // Persistence wedge (telemachus-8zj.3): OPFS survives reload under the enforcing CSP.
 test('a note inserted into the persisted collection survives reload', async ({
