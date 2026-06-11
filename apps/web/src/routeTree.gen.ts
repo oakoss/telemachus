@@ -13,6 +13,7 @@ import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as PublicReloadSmokeRouteImport } from './routes/_public/reload-smoke'
 import { Route as PublicElectricSmokeRouteImport } from './routes/_public/electric-smoke'
 import { Route as PublicDbSmokeRouteImport } from './routes/_public/db-smoke'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
@@ -37,6 +38,11 @@ const AppRouteRoute = AppRouteRouteImport.update({
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicReloadSmokeRoute = PublicReloadSmokeRouteImport.update({
+  id: '/reload-smoke',
+  path: '/reload-smoke',
   getParentRoute: () => PublicRouteRoute,
 } as any)
 const PublicElectricSmokeRoute = PublicElectricSmokeRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/sign-up': typeof AuthSignUpRoute
   '/db-smoke': typeof PublicDbSmokeRoute
   '/electric-smoke': typeof PublicElectricSmokeRoute
+  '/reload-smoke': typeof PublicReloadSmokeRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/sign-up': typeof AuthSignUpRoute
   '/db-smoke': typeof PublicDbSmokeRoute
   '/electric-smoke': typeof PublicElectricSmokeRoute
+  '/reload-smoke': typeof PublicReloadSmokeRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
 }
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_public/db-smoke': typeof PublicDbSmokeRoute
   '/_public/electric-smoke': typeof PublicElectricSmokeRoute
+  '/_public/reload-smoke': typeof PublicReloadSmokeRoute
   '/_public/': typeof PublicIndexRoute
   '/api/electric-smoke/notes': typeof ApiElectricSmokeNotesRoute
   '/api/electric-smoke/shape': typeof ApiElectricSmokeShapeRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/db-smoke'
     | '/electric-smoke'
+    | '/reload-smoke'
     | '/api/electric-smoke/notes'
     | '/api/electric-smoke/shape'
   fileRoutesByTo: FileRoutesByTo
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/db-smoke'
     | '/electric-smoke'
+    | '/reload-smoke'
     | '/api/electric-smoke/notes'
     | '/api/electric-smoke/shape'
   id:
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_auth/sign-up'
     | '/_public/db-smoke'
     | '/_public/electric-smoke'
+    | '/_public/reload-smoke'
     | '/_public/'
     | '/api/electric-smoke/notes'
     | '/api/electric-smoke/shape'
@@ -192,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/reload-smoke': {
+      id: '/_public/reload-smoke'
+      path: '/reload-smoke'
+      fullPath: '/reload-smoke'
+      preLoaderRoute: typeof PublicReloadSmokeRouteImport
       parentRoute: typeof PublicRouteRoute
     }
     '/_public/electric-smoke': {
@@ -284,12 +303,14 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface PublicRouteRouteChildren {
   PublicDbSmokeRoute: typeof PublicDbSmokeRoute
   PublicElectricSmokeRoute: typeof PublicElectricSmokeRoute
+  PublicReloadSmokeRoute: typeof PublicReloadSmokeRoute
   PublicIndexRoute: typeof PublicIndexRoute
 }
 
 const PublicRouteRouteChildren: PublicRouteRouteChildren = {
   PublicDbSmokeRoute: PublicDbSmokeRoute,
   PublicElectricSmokeRoute: PublicElectricSmokeRoute,
+  PublicReloadSmokeRoute: PublicReloadSmokeRoute,
   PublicIndexRoute: PublicIndexRoute,
 }
 
