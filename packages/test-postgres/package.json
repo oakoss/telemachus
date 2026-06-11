@@ -1,0 +1,28 @@
+{
+  "name": "@oakoss/test-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf .turbo coverage node_modules",
+    "lint": "eslint . --max-warnings 0 --cache --cache-location node_modules/.cache/.eslintcache",
+    "test:integration": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@testcontainers/postgresql": "catalog:",
+    "testcontainers": "catalog:"
+  },
+  "devDependencies": {
+    "@oakoss/eslint": "workspace:*",
+    "@oakoss/typescript": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "postgres": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -31,15 +31,24 @@ catalog:
   '@tanstack/electric-db-collection': ^0.3.6
   '@electric-sql/client': ^1.5.20
   postgres: ^3.4.9
+  testcontainers: ^12.0.1
+  '@testcontainers/postgresql': ^12.0.1
+  jiti: ^2.7.0
 
 allowBuilds:
   # Denied: its postinstall downloads the PowerSync dynamic core over the
   # network. We use plain wa-sqlite/OPFS (the prebuilt dist/*.wasm already
   # ship); the PowerSync core isn't used. Revisit only if OPFS fails at runtime.
   '@journeyapps/wa-sqlite': false
+  # Testcontainers' ssh2 transport (and its cpu-features optional dep) only
+  # build native crypto for remote-Docker-over-SSH; local Docker uses the pure-JS
+  # fallback. protobufjs ships prebuilt — its postinstall isn't needed.
+  cpu-features: false
   esbuild: true
   lefthook: true
   lightningcss: true
+  protobufjs: false
+  ssh2: false
 
 # Pin pnpm's default explicitly (minutes; 1440 = 1 day).
 minimumReleaseAge: 1440

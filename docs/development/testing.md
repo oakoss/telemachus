@@ -1,23 +1,27 @@
 # Testing conventions
 
-Adapted from the finance-tracker testing guide (2026-06-10, bd `telemachus-zhq`) for this stack: Vitest + Playwright ([ADR-007](../decisions/007-repo-shape-and-toolchain.md)), real Postgres via Testcontainers for server integration tests ([ADR-003](../decisions/003-orm-drizzle.md)), Zod v4. CI policy lives in [`../specs/ci-cd-release.md`](../specs/ci-cd-release.md) (wiring tracked in bd `telemachus-8zj.7`).
+Vitest + Playwright ([ADR-007](../decisions/007-repo-shape-and-toolchain.md)), real Postgres via Testcontainers for server integration tests ([ADR-003](../decisions/003-orm-drizzle.md)), Zod v4. CI policy: [`../specs/ci-cd-release.md`](../specs/ci-cd-release.md).
 
 ## Commands
 
 ```bash
 pnpm test                  # all unit tests, per package via Turbo
-pnpm -F @oakoss/web test:e2e   # Playwright against the prod nitro build (port 3100)
+pnpm test:integration      # *.integration.test.ts against real Postgres (Testcontainers; Docker required)
+pnpm -F @oakoss/web test:e2e             # Playwright against the prod nitro build (port 3100)
+pnpm -F @oakoss/web test:e2e:containers  # same, but boots a Testcontainers Postgres+Electric stack (what CI runs)
 ```
 
-The Electric e2e specs need the compose stack (`docker compose --profile electric up -d`) and skip cleanly without it; `REQUIRE_ELECTRIC=1` turns that skip into a failure for environments that promise the stack.
+The Testcontainers harness (`@oakoss/test-postgres`) provides throwaway containers: `startPostgres()` for the integration suite and `startStack()` (Postgres + Electric) for the e2e wrapper. Both need a running Docker daemon.
+
+Plain `test:e2e` runs the Electric specs against the compose stack (`docker compose --profile electric up -d`) and skips cleanly without it; `test:e2e:containers` (CI) provides the stack itself and sets `REQUIRE_ELECTRIC=1`, turning a skip into a failure so a regression can't green-skip.
 
 ## Test tiers
 
-| Tier            | Scope                                                                                                           | Where                                              |
-| --------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| **Unit**        | Pure functions and module contracts; no server, DB, or browser                                                  | `src/**/*.test.ts` next to the source, per package |
-| **Integration** | Server services + Drizzle schema against **real Postgres** (Testcontainers, throwaway container per suite — R1) | `*.integration.test.ts` (lands with the R1 schema) |
-| **E2E**         | User-visible behavior through the real app build                                                                | `apps/web/e2e/*.e2e.ts`                            |
+| Tier            | Scope                                                                                                      | Where                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Unit**        | Pure functions and module contracts; no server, DB, or browser                                             | `src/**/*.test.ts` next to the source, per package                                 |
+| **Integration** | Server services + Drizzle schema against **real Postgres** (Testcontainers, throwaway container per suite) | `*.integration.test.ts`; harness live now, server suites attach with the R1 schema |
+| **E2E**         | User-visible behavior through the real app build                                                           | `apps/web/e2e/*.e2e.ts`                                                            |
 
 Server handlers (route files, BFF wrappers) stay thin delegators — test them via e2e, not integration; the logic they delegate to gets the unit/integration coverage.
 

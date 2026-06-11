@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:containers": "jiti ./scripts/e2e-with-stack.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@oakoss/eslint": "workspace:*",
+    "@oakoss/test-postgres": "workspace:*",
     "@oakoss/typescript": "workspace:*",
     "@playwright/test": "^1.60.0",
     "@tanstack/devtools-vite": "^0.7.0",
@@ -44,6 +46,7 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "catalog:",
+    "jiti": "catalog:",
     "jsdom": "^29.1.1",
     "typescript": "catalog:",
     "vite": "catalog:",

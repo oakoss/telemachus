@@ -26,6 +26,7 @@
     "sherif": "sherif",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
+    "test:integration": "turbo run test:integration",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
@@ -33,7 +34,7 @@
     "@commitlint/config-conventional": "^21.0.2",
     "commitlint": "^21.0.2",
     "czg": "^1.13.1",
-    "jiti": "^2.7.0",
+    "jiti": "catalog:",
     "knip": "^6.16.1",
     "lefthook": "^2.1.9",
     "markdownlint-cli2": "^0.22.1",

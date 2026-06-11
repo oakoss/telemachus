@@ -65,10 +65,10 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Setup
         uses: ./.github/actions/setup
-      # Stub: real suite (Vitest + Testcontainers, real Postgres) lands at telemachus-8zj.6.5.
-      # Keeping the job shape now means branch protection never needs rewiring.
+      # Throwaway Postgres per suite via Testcontainers (Docker preinstalled on
+      # ubuntu runners). Server suites attach as the R1 schema lands.
       - name: vitest
-        run: echo "No integration tests yet — lands at telemachus-8zj.6.5 (Testcontainers harness)."
+        run: pnpm test:integration
 
   e2e:
     name: E2E tests
@@ -81,8 +81,10 @@ jobs:
         uses: ./.github/actions/setup
       - name: Install Playwright browsers
         run: pnpm --filter @oakoss/web exec playwright install --with-deps chromium
+      # Boots Postgres + Electric via Testcontainers so the Electric write-path
+      # specs run for real (REQUIRE_ELECTRIC=1) instead of green-skipping.
       - name: e2e
-        run: pnpm --filter @oakoss/web test:e2e
+        run: pnpm --filter @oakoss/web test:e2e:containers
 
   summary:
     name: CI summary
