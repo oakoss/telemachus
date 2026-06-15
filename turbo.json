@@ -15,7 +15,17 @@
     "dev": { "cache": false, "persistent": true },
     "lint": {},
     "test": { "outputs": ["coverage/**"] },
-    "test:e2e": { "cache": false },
+    "test:e2e": {
+      "cache": false,
+      "passThroughEnv": [
+        "CI",
+        "REQUIRE_ELECTRIC",
+        "DATABASE_URL",
+        "ELECTRIC_URL",
+        "POSTGRES_PORT",
+        "ELECTRIC_PORT"
+      ]
+    },
     "test:integration": { "cache": false },
     "typecheck": {}
   }
