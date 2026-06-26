@@ -5,34 +5,34 @@ packages:
 # Shared dep versions — reference as "catalog:" in any package; bump once here. See docs/specs/scaffold.md.
 catalog:
   '@t3-oss/env-core': ^0.13.11
-  '@types/node': ^25.9.3
+  '@types/node': ^26.0.1
   '@types/react': ^19.2.17
   '@types/react-dom': ^19.2.3
   react: ^19.2.7
   react-dom: ^19.2.7
   typescript: ^6.0.3
-  vite: ^8.0.16
+  vite: ^8.1.0
   eslint: ^10.5.0
   '@eslint/js': ^10.0.1
-  typescript-eslint: ^8.61.0
-  eslint-plugin-oxlint: ^1.69.0
+  typescript-eslint: ^8.62.0
+  eslint-plugin-oxlint: ^1.71.0
   '@vitest/eslint-plugin': ^1.6.20
-  globals: ^17.6.0
-  '@eslint-react/eslint-plugin': ^5.9.0
+  globals: ^17.7.0
+  '@eslint-react/eslint-plugin': ^5.9.2
   '@tanstack/eslint-plugin-router': ^1.162.0
   eslint-plugin-better-tailwindcss: ^4.6.0
-  eslint-plugin-perfectionist: ^5.9.0
-  uuid: ^14.0.0
-  vitest: ^4.1.8
+  eslint-plugin-perfectionist: ^5.9.1
+  uuid: ^14.0.1
+  vitest: ^4.1.9
   zod: ^4.4.3
-  '@tanstack/db': ^0.6.8
-  '@tanstack/browser-db-sqlite-persistence': ^0.2.0
-  '@tanstack/react-db': ^0.1.86
-  '@tanstack/electric-db-collection': ^0.3.6
+  '@tanstack/db': ^0.6.10
+  '@tanstack/browser-db-sqlite-persistence': ^0.2.2
+  '@tanstack/react-db': ^0.1.88
+  '@tanstack/electric-db-collection': ^0.3.8
   '@electric-sql/client': ^1.5.21
   postgres: ^3.4.9
-  testcontainers: ^12.0.2
-  '@testcontainers/postgresql': ^12.0.2
+  testcontainers: ^12.0.3
+  '@testcontainers/postgresql': ^12.0.3
   jiti: ^2.7.0
 
 allowBuilds:
