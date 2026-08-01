@@ -29,7 +29,7 @@ catalog:
   '@tanstack/browser-db-sqlite-persistence': ^0.2.2
   '@tanstack/react-db': ^0.1.88
   '@tanstack/electric-db-collection': ^0.3.8
-  '@electric-sql/client': ^1.5.21
+  '@electric-sql/client': ^1.5.24
   postgres: ^3.4.9
   testcontainers: ^12.0.3
   '@testcontainers/postgresql': ^12.0.3
