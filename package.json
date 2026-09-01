@@ -45,7 +45,7 @@
     "turbo": "^2.10.0",
     "typescript": "catalog:"
   },
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.11.0",
   "sherif": {
     "ignoreRule": [
       "unordered-dependencies"
