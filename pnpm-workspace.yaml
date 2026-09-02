@@ -56,3 +56,5 @@ minimumReleaseAge: 1440
 # 1-day cooldown (it is a nightly). Drop when Start ships a stable nitro.
 minimumReleaseAgeExclude:
   - nitro-nightly@3.0.1-20260605-145636-4ab22a9d
+  # Renovate security update: pnpm@11.11.0
+  - pnpm@11.11.0
